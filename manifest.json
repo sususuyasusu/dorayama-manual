@@ -1,0 +1,11 @@
+{
+  "name": "どら山 スタッフマニュアル",
+  "short_name": "どら山マニュアル",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f6f2ec",
+  "theme_color": "#8B5E3C",
+  "icons": [
+    { "src": "./img/logo.png", "sizes": "any", "type": "image/png" }
+  ]
+}

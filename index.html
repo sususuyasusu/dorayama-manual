@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#8B5E3C">
+<link rel="apple-touch-icon" href="./img/logo.png">
+<link rel="icon" href="./img/logo.png">
+<link rel="manifest" href="./manifest.json">
+<title>どら山 スタッフマニュアル</title>
+<style>
+:root{--appw:520px;--brown:#8B5E3C;--ink:#33302c;--paper:#f6f2ec;--card:#fff;--line:#e7ded2}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+  background:var(--paper);color:var(--ink);font-size:15px;line-height:1.6;
+  padding-bottom:calc(24px + env(safe-area-inset-bottom))}
+.wrap{max-width:var(--appw);margin:0 auto;padding:0 12px}
+/* ヘッダー */
+header{position:sticky;top:0;z-index:20;background:var(--brown);color:#fff;
+  box-shadow:0 2px 8px rgba(0,0,0,.18)}
+.hbar{max-width:var(--appw);margin:0 auto;display:flex;align-items:center;gap:10px;padding:10px 12px}
+.hbar img{width:30px;height:30px;border-radius:7px;background:#fff}
+.hbar .t{font-weight:700;font-size:16px;letter-spacing:.02em;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hbar button{border:0;background:rgba(255,255,255,.16);color:#fff;border-radius:9px;padding:7px 12px;font-size:13px;font-weight:600}
+/* ホーム */
+.search{display:flex;gap:8px;margin:14px 0 4px}
+.search input{flex:1;border:1.5px solid var(--line);border-radius:12px;padding:11px 14px;font-size:15px;background:#fff}
+h2.sec{font-size:13px;color:#7a6f5f;margin:20px 4px 8px;font-weight:700;letter-spacing:.06em}
+.updates{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.upd{display:flex;gap:10px;padding:11px 14px;border-top:1px solid #f0e9dd;align-items:flex-start}
+.upd:first-child{border-top:0}
+.upd .d{font-size:12px;color:#8a7f6e;white-space:nowrap;padding-top:2px}
+.upd .tt{font-weight:700;font-size:14px}
+.upd .no{font-size:13px;color:#6c6355;margin-top:2px}
+.upd .cat{display:inline-block;font-size:11px;border-radius:6px;padding:1px 7px;color:#fff;margin-left:6px;vertical-align:1px}
+.badge{display:inline-block;background:#e5484d;color:#fff;font-size:10px;font-weight:800;border-radius:6px;padding:1px 6px;margin-right:6px;vertical-align:2px}
+.moreu{width:100%;border:0;background:#faf6ef;padding:10px;font-size:13px;color:#8a6d3b;font-weight:600}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
+.cat-card{border:0;border-radius:16px;padding:14px 12px;color:#fff;text-align:left;
+  box-shadow:0 2px 6px rgba(60,40,10,.12);display:flex;flex-direction:column;gap:4px;min-height:86px}
+.cat-card .e{font-size:22px;line-height:1}
+.cat-card .n{font-weight:800;font-size:15.5px}
+.cat-card .s{font-size:11.5px;opacity:.88}
+.foot{margin:26px 4px;font-size:12.5px;color:#8a7f6e;text-align:center}
+.foot a{color:#8a6d3b}
+/* カテゴリ画面 */
+.cathead{border-radius:16px;color:#fff;padding:16px 16px 13px;margin-top:14px;box-shadow:0 2px 8px rgba(60,40,10,.14)}
+.cathead .n{font-size:19px;font-weight:800}
+.cathead .s{font-size:12.5px;opacity:.9;margin-top:2px}
+.bar{color:#fff;border-radius:11px;padding:8px 13px;font-weight:800;font-size:15px;margin:18px 0 8px}
+.item{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:7px 0;display:flex;gap:10px}
+.item .lb{flex:0 0 auto;max-width:38%;font-weight:800;font-size:13.5px;padding:3px 9px;border-radius:8px;align-self:flex-start}
+.item .tx{flex:1;font-size:14px}
+.bul{background:#fff;border:1px solid var(--line);border-radius:12px;padding:9px 12px;margin:7px 0;font-size:14px;display:flex;gap:8px}
+.bul:before{content:"・";font-weight:800}
+.note{border-radius:12px;padding:10px 13px;margin:8px 0;font-size:13.5px;font-weight:600}
+.note.warn{background:#fdeee3;color:#b4500f;border:1px solid #f3cdb0}
+.note.memo{background:#fdf7e2;color:#7f6000;border:1px solid #eedfae}
+.note.star{background:#fff3c8;color:#8a6b00;border:1px solid #eeda92}
+.ng{background:#fbeaea;border:1px solid #ecc7c7;color:#843c3c;border-radius:12px;padding:10px 12px;margin:7px 0;font-weight:700;font-size:14px;display:flex;gap:9px}
+.ng:before{content:"✕";background:#9e3d3d;color:#fff;border-radius:7px;padding:0 7px;font-weight:800;align-self:flex-start}
+.flow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:8px 0}
+.flow .st{background:#fff;border:1.5px solid;border-radius:10px;padding:6px 10px;font-weight:700;font-size:13px}
+.flow .ar{font-weight:800}
+.fifo{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px;margin:8px 0}
+.fifo .cap{font-size:12.5px;font-weight:700;color:#7f6a55;margin-bottom:8px}
+.fifo .g{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.fifo .c{border-radius:9px;padding:9px 8px;font-size:12.5px;font-weight:700;color:#703000;text-align:center}
+.fifo .n{font-size:11.5px;color:#c0500d;margin-top:7px;text-align:center}
+.quad{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0}
+.quad .q{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.quad .qh{color:#fff;font-weight:800;font-size:13px;padding:6px 9px;text-align:center}
+.quad .qb{padding:8px 9px;font-size:12.5px;font-weight:600;text-align:center}
+.ph{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;margin:10px 0}
+.ph img{width:100%;display:block}
+.ph .cap{font-size:12.5px;font-weight:600;color:#5d5546;padding:8px 12px;background:#faf6ef}
+.backrow{display:flex;gap:8px;margin:14px 0 4px}
+.backrow button{border:1px solid var(--line);background:#fff;border-radius:11px;padding:9px 14px;font-size:14px;font-weight:700;color:#6b5334}
+.addbtn{position:fixed;right:16px;bottom:calc(18px + env(safe-area-inset-bottom));z-index:25;border:0;border-radius:999px;
+  padding:13px 18px;font-size:15px;font-weight:800;color:#fff;box-shadow:0 4px 14px rgba(60,30,0,.3)}
+/* 検索結果 */
+.hit{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:8px 0}
+.hit .c{display:inline-block;font-size:11px;color:#fff;border-radius:6px;padding:1px 7px;margin-bottom:4px}
+.hit .h{font-weight:700;font-size:13.5px}
+.hit .t{font-size:13px;color:#6c6355}
+mark{background:#ffe28a;border-radius:3px;padding:0 1px}
+/* モーダル */
+#modal{position:fixed;inset:0;background:rgba(30,20,8,.45);z-index:40;display:none;align-items:flex-end;justify-content:center}
+#modal.on{display:flex}
+.sheet{background:#fff;border-radius:18px 18px 0 0;width:100%;max-width:var(--appw);padding:18px 16px calc(18px + env(safe-area-inset-bottom));max-height:86vh;overflow:auto}
+.sheet h3{margin:0 0 12px;font-size:16px}
+.sheet label{display:block;font-size:12.5px;font-weight:700;color:#7a6f5f;margin:11px 0 4px}
+.sheet input,.sheet textarea,.sheet select{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;font-size:15px;background:#fff;color:var(--ink)}
+.sheet textarea{min-height:84px}
+.srow{display:flex;gap:10px}
+.srow>div{flex:1}
+.sheet .go{width:100%;border:0;border-radius:12px;padding:13px;font-size:15px;font-weight:800;color:#fff;background:var(--brown);margin-top:16px}
+.sheet .cancel{width:100%;border:0;background:none;padding:11px;font-size:13.5px;color:#8a7f6e}
+.err{color:#c0392b;font-size:13px;font-weight:700;margin-top:8px;display:none}
+/* トースト・ライトボックス・ロード */
+#toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom));background:#2e7d32;color:#fff;font-size:13.5px;font-weight:700;border-radius:11px;padding:10px 16px;z-index:50;display:none;box-shadow:0 4px 12px rgba(0,0,0,.25)}
+#lightbox{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:60;display:none;align-items:center;justify-content:center;flex-direction:column;gap:10px}
+#lightbox img{max-width:96vw;max-height:82vh;border-radius:8px}
+#lightbox .cap{color:#eee;font-size:13px;padding:0 16px;text-align:center}
+#load{padding:60px 0;text-align:center;color:#8a7f6e;font-size:14px}
+@media(min-width:768px){:root{--appw:640px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="hbar">
+    <img src="./img/logo.png" alt="">
+    <div class="t" id="htitle">どら山 スタッフマニュアル</div>
+    <button id="hbtn" style="display:none">🏠 トップ</button>
+  </div>
+</header>
+
+<div class="wrap" id="app"><div id="load">⏳ 読み込み中…（起動直後は30秒ほどかかることがあります）</div></div>
+
+<div id="modal"><div class="sheet" id="sheetbody"></div></div>
+<div id="toast"></div>
+<div id="lightbox" onclick="this.style.display='none'"><img id="lbimg" src=""><div class="cap" id="lbcap"></div></div>
+
+<script>
+// ===== 独立版設定: データはGoogle Apps Script(本人アカウント)経由で製造表の裏タブを読み書き =====
+const API='https://script.google.com/macros/s/AKfycbye-3UwADfDDbkH68LuVxv1wA-TI1eMo9BTEUa5H7RFJ8KqMbpsvtHUhZeh8mon1Hqq/exec';
+const CATEGORIES=[
+ {id:'common',  name:'共通',        emoji:'⭐', accent:'595959', light:'EDEDED', sub:'全員で守るルール'},
+ {id:'iriguchi',name:'入口',        emoji:'🚪', accent:'8B5E3C', light:'F3E5D8', sub:'出勤・開店・閉店'},
+ {id:'shikomi', name:'仕込み台',    emoji:'🥚', accent:'C55A11', light:'FCE4D6', sub:'たまご管理・仕込み'},
+ {id:'kiji',    name:'生地作り',    emoji:'🥣', accent:'BF8F00', light:'FBE9C7', sub:'タネづくり'},
+ {id:'yakidai', name:'焼台',        emoji:'🔥', accent:'9E3D3D', light:'F2DCDC', sub:'焼き・銅板清掃'},
+ {id:'seizou',  name:'製造作業台',  emoji:'🫘', accent:'538135', light:'E2EFDA', sub:'あんこ・生どら・フルーツ'},
+ {id:'counter', name:'カウンター',  emoji:'🛍️', accent:'2E75B6', light:'DDEBF7', sub:'接客・レジ'},
+ {id:'tana',    name:'材料などの棚',emoji:'📦', accent:'7030A0', light:'E6DCF0', sub:'在庫・発注'},
+ {id:'pc',      name:'PC・コピー機',emoji:'🖨️', accent:'305496', light:'DCE3EE', sub:'打刻・袋印刷・伝票'},
+ {id:'sealer',  name:'シーラー・梱包',emoji:'🎁', accent:'1F7A6B', light:'D6EAE4', sub:'箱詰め・袋・発送'},
+];
+let M=null, view={name:'home'};
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const catByName=n=>M.categories.find(c=>c.name===n);
+
+async function fetchJSON(url,opt){
+  for(let i=0;i<4;i++){
+    try{
+      const ctl=new AbortController();const t=setTimeout(()=>ctl.abort(),25000);
+      const r=await fetch(url,{...opt,signal:ctl.signal});clearTimeout(t);
+      if(r.ok)return await r.json();
+    }catch(e){}
+    await new Promise(r=>setTimeout(r,1200));
+  }
+  throw new Error('接続できませんでした');
+}
+const fmtDate=s=>{const m=String(s).match(/(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})/);return m?`${+m[1]}/${+m[2]}/${+m[3]}`:String(s);};
+function assemble(raw){
+  const content={};
+  for(const r of (raw.content||[])){
+    const cat=String(r[0]||'').trim();
+    if(!CATEGORIES.some(c=>c.name===cat))continue;
+    (content[cat]=content[cat]||[]).push({type:String(r[1]||'').trim()||'箇条書き',label:r[2]||'',text:r[3]||'',photo:String(r[4]||'').trim(),src:r[5]||''});
+  }
+  const updates=(raw.updates||[]).filter(r=>r&&String(r[0]).trim())
+    .map(r=>({date:fmtDate(r[0]),title:r[1]||'',note:r[2]||'',cat:String(r[3]||'').trim(),by:r[4]||''}));
+  updates.reverse();
+  return {categories:CATEGORIES,content,updates,today:raw.today};
+}
+async function boot(){
+  try{M=assemble(await fetchJSON(API+'?action=manual'));render();}
+  catch(e){$('#app').innerHTML='<div id="load">⚠️ 読み込めませんでした<br><br><button class="moreu" onclick="boot()">🔄 もう一度</button></div>';}
+}
+function daysAgo(dstr){
+  const m=String(dstr).match(/(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})/);if(!m)return 999;
+  return Math.floor((new Date(M.today)-new Date(+m[1],+m[2]-1,+m[3]))/86400000);
+}
+function go(v){view=v;window.scrollTo(0,0);render();}
+function render(){
+  $('#hbtn').style.display=view.name==='home'?'none':'';
+  $('#htitle').textContent=view.name==='cat'?view.cat:'どら山 スタッフマニュアル';
+  if(view.name==='home')renderHome();else renderCat(view.cat);
+}
+$('#hbtn').onclick=()=>go({name:'home'});
+
+/* ---------- ホーム ---------- */
+function renderHome(){
+  const upd=M.updates||[];
+  const updHtml=(n)=>upd.slice(0,n).map(u=>{
+    const c=catByName(u.cat);
+    return `<div class="upd" ${c?`onclick="go({name:'cat',cat:'${esc(u.cat)}'})"`:''}>
+      <div class="d">${esc(u.date.replace(/^\d{4}\//,''))}</div>
+      <div style="flex:1">
+        <div class="tt">${daysAgo(u.date)<=7?'<span class="badge">NEW</span>':''}${esc(u.title)}
+          ${c?`<span class="cat" style="background:#${c.accent}">${esc(u.cat)}</span>`:''}</div>
+        ${u.note?`<div class="no">${esc(u.note)}</div>`:''}
+      </div></div>`;}).join('');
+  const cats=M.categories.map(c=>{
+    const n=(M.content[c.name]||[]).length;
+    return `<button class="cat-card" style="background:linear-gradient(140deg,#${c.accent},#${c.accent}dd)"
+      onclick="go({name:'cat',cat:'${esc(c.name)}'})">
+      <span class="e">${c.emoji}</span><span class="n">${esc(c.name)}</span>
+      <span class="s">${esc(c.sub)}・${n}項目</span></button>`;}).join('');
+  $('#app').innerHTML=`
+    <div class="search"><input id="q" placeholder="🔍 さがす（例: あんこ / 両替 / シーラー）"></div>
+    <div id="hits"></div>
+    <div id="homebody">
+      <h2 class="sec">📣 更新のお知らせ</h2>
+      <div class="updates" id="updbox">${updHtml(4)||'<div class="upd">お知らせはまだありません</div>'}
+        ${upd.length>4?'<button class="moreu" id="moreu">▼ 過去のお知らせもすべて見る（'+upd.length+'件）</button>':''}</div>
+      <h2 class="sec">🏪 現場から選ぶ</h2>
+      <div class="grid">${cats}</div>
+      <div class="foot">
+        ✏️ 内容の追加は各ページ右下のボタンから（編集者用）<br>
+        <a id="annlink" href="javascript:openAnnounce()">📣 お知らせだけを投稿する</a><br><br>
+        <a href="https://dorayama-seizo-app-1.onrender.com/">📊 製造アプリへ</a>
+        <a href="https://docs.google.com/spreadsheets/d/1nLCyRaw8ug_U7HVnVwCC490jeRVTdJDKouixA3s6sy0/edit" target="_blank">🖨️ 印刷版（スプレッドシート）</a>
+      </div>
+    </div>`;
+  if($('#moreu'))$('#moreu').onclick=()=>{$('#updbox').innerHTML=updHtml(upd.length);};
+  $('#q').oninput=e=>search(e.target.value.trim());
+}
+function search(q){
+  const box=$('#hits'),home=$('#homebody');
+  if(!q){box.innerHTML='';home.style.display='';return;}
+  home.style.display='none';
+  const hits=[];
+  for(const c of M.categories){
+    let sec='';
+    for(const r of (M.content[c.name]||[])){
+      if(r.type==='見出し'){sec=r.text;continue;}
+      const hay=(r.label+' '+r.text+' '+sec);
+      if(hay.includes(q))hits.push({cat:c,sec,r});
+      if(hits.length>=40)break;
+    }
+  }
+  const hl=t=>esc(t).split(esc(q)).join('<mark>'+esc(q)+'</mark>');
+  box.innerHTML=hits.length?hits.map(h=>`
+    <div class="hit" onclick="go({name:'cat',cat:'${esc(h.cat.name)}'})">
+      <span class="c" style="background:#${h.cat.accent}">${h.cat.emoji} ${esc(h.cat.name)}</span>
+      <div class="h">${h.r.label?hl(h.r.label):esc(h.sec)}</div>
+      <div class="t">${hl(h.r.text.slice(0,90))}${h.r.text.length>90?'…':''}</div>
+    </div>`).join(''):'<div class="hit">「'+esc(q)+'」は見つかりませんでした</div>';
+}
+
+/* ---------- カテゴリ ---------- */
+function renderCat(name){
+  const c=catByName(name);if(!c){go({name:'home'});return;}
+  const rows=M.content[name]||[];
+  let h=`<div class="backrow"><button onclick="go({name:'home'})">← トップへ</button></div>
+    <div class="cathead" style="background:linear-gradient(140deg,#${c.accent},#${c.accent}dd)">
+      <div class="n">${c.emoji} ${esc(name)}</div><div class="s">${esc(c.sub)}</div></div>`;
+  for(const r of rows){
+    const t=r.type;
+    if(t==='見出し')h+=`<div class="bar" style="background:#${c.accent}">■ ${esc(r.text)}</div>`;
+    else if(t==='項目')h+=`<div class="item"><span class="lb" style="background:#${c.light};color:#${c.accent}">${esc(r.label)}</span><span class="tx">${esc(r.text)}</span></div>`;
+    else if(t==='箇条書き')h+=`<div class="bul"><span>${esc(r.text)}</span></div>`;
+    else if(t==='注意')h+=`<div class="note warn">⚠️ ${esc(r.text)}</div>`;
+    else if(t==='メモ')h+=`<div class="note memo">${esc(r.text)}</div>`;
+    else if(t==='ポイント')h+=`<div class="note star">★ ${esc(r.text)}</div>`;
+    else if(t==='禁止')h+=`<div class="ng"><span>${esc(r.text)}</span></div>`;
+    else if(t==='流れ')h+=`<div class="flow">${r.text.split(' → ').map((s,i,a)=>`<span class="st" style="border-color:#${c.accent};color:#${c.accent};${i===a.length-1?`background:#${c.accent};color:#fff;`:''}">${esc(s)}</span>${i<a.length-1?'<span class="ar" style="color:#'+c.accent+'">→</span>':''}`).join('')}</div>`;
+    else if(t==='冷蔵庫')h+=`<div class="fifo"><div class="cap">【冷蔵庫の置き方（先入れ先出し）】</div>
+      <div class="g"><div class="c" style="background:#F8CBAD">① いちばん古い（最初に使う）</div><div class="c" style="background:#FCE4D6">② 次に古い</div>
+      <div class="c" style="background:#FDF0E7">③</div><div class="c" style="background:#fff;border:2px solid #C55A11">④ いちばん新しい（最後に使う）</div></div>
+      <div class="n">左上→右下の順に新しくなるように置く</div></div>`;
+    else if(t==='カード'){
+      const hs=r.label.split('|'),ds=r.text.split('|');
+      h+=`<div class="quad">${hs.map((x,i)=>`<div class="q"><div class="qh" style="background:#${c.accent}">${esc(x)}</div><div class="qb" style="background:#${c.light}">${esc(ds[i]||'')}</div></div>`).join('')}</div>`;}
+    else if(t==='写真'&&r.photo)h+=`<div class="ph" onclick="lightbox('./img/${esc(r.photo)}','${esc(r.label)}')"><img loading="lazy" src="./img/${esc(r.photo)}"><div class="cap">📷 ${esc(r.label)}</div></div>`;
+    if(r.src&&r.src.includes('アプリ追記')){h+=`<div style="font-size:11px;color:#9a8f7e;margin:-4px 4px 8px;text-align:right">（${esc(r.src)}）</div>`;}
+  }
+  h+=`<div class="note memo" style="margin-top:18px">※ 旬どら（期間限定商品）の作り方・最新の変更は、必ずLINEグループのノートで確認してください。</div>
+    <div style="height:70px"></div>
+    <button class="addbtn" style="background:#${c.accent}" onclick="openAdd('${esc(name)}')">✏️ 加筆する</button>`;
+  $('#app').innerHTML=h;
+}
+function lightbox(src,cap){$('#lbimg').src=src;$('#lbcap').textContent=cap;$('#lightbox').style.display='flex';}
+
+/* ---------- 加筆・お知らせ ---------- */
+function openAdd(cat){
+  const c=catByName(cat);
+  const secs=(M.content[cat]||[]).filter(r=>r.type==='見出し').map(r=>r.text);
+  $('#sheetbody').innerHTML=`<h3>✏️ ${esc(cat)} に加筆する</h3>
+    <label>どの見出しのあたり？（メモとして残ります・任意）</label>
+    <select id="f_sec"><option value="">（指定しない）</option>${secs.map(s=>`<option>${esc(s)}</option>`).join('')}</select>
+    <div class="srow"><div><label>種類</label>
+      <select id="f_type"><option>箇条書き</option><option>項目</option><option>注意</option><option>メモ</option></select></div>
+    <div><label>ラベル（「項目」のとき）</label><input id="f_label" placeholder="例: 新ルール"></div></div>
+    <label>内容 ＊必須</label><textarea id="f_text" placeholder="例: 白あんの補充は残り2個からにする（7/15〜）"></textarea>
+    <div class="srow"><div><label>あなたの名前</label><input id="f_by" placeholder="例: ひかり"></div>
+    <div><label>合言葉</label><input id="f_code" placeholder="編集用の合言葉"></div></div>
+    <div class="err" id="f_err"></div>
+    <button class="go" style="background:#${c.accent}" onclick="submitAdd('${esc(cat)}')">この内容で加筆する</button>
+    <button class="cancel" onclick="closeModal()">やめる</button>`;
+  $('#f_code').value=localStorage.getItem('manual_code')||'';
+  $('#modal').classList.add('on');
+}
+async function submitAdd(cat){
+  const sec=$('#f_sec').value,typ=$('#f_type').value;
+  let label=$('#f_label').value.trim(),text=$('#f_text').value.trim();
+  if(!text){showErr('内容を入れてください');return;}
+  if(sec&&typ!=='項目'&&!label)label='';
+  if(sec)text=(sec?`【${sec}】`:'')+text;
+  const code=$('#f_code').value.trim(),by=$('#f_by').value.trim();
+  let head=label||text;if(head.length>40)head=head.slice(0,39)+'…';
+  try{
+    const r=await fetchJSON(API,{method:'POST',
+      body:JSON.stringify({action:'add',cat,type:typ,label,text,by,code,
+        upd_title:`${cat}に追記`,upd_note:head})});
+    if(!r.ok){showErr(r.error==='BAD_CODE'?'合言葉が違います':(r.error||'保存できませんでした'));return;}
+    localStorage.setItem('manual_code',code);
+    closeModal();toast('保存しました。お知らせにも掲載されます');
+    M=assemble(await fetchJSON(API+'?action=manual'));render();
+  }catch(e){showErr('通信エラー。電波の良いところでもう一度');}
+}
+function openAnnounce(){
+  $('#sheetbody').innerHTML=`<h3>📣 お知らせを投稿する</h3>
+    <label>タイトル ＊必須</label><input id="a_title" placeholder="例: 7/20から営業時間が変わります">
+    <label>くわしく（任意）</label><textarea id="a_note"></textarea>
+    <label>関係する現場（任意）</label>
+    <select id="a_cat"><option value="">（全体）</option>${M.categories.map(c=>`<option>${esc(c.name)}</option>`).join('')}</select>
+    <div class="srow"><div><label>あなたの名前</label><input id="a_by"></div>
+    <div><label>合言葉</label><input id="a_code"></div></div>
+    <div class="err" id="f_err"></div>
+    <button class="go" onclick="submitAnnounce()">投稿する</button>
+    <button class="cancel" onclick="closeModal()">やめる</button>`;
+  $('#a_code').value=localStorage.getItem('manual_code')||'';
+  $('#modal').classList.add('on');
+}
+async function submitAnnounce(){
+  const title=$('#a_title').value.trim();if(!title){showErr('タイトルを入れてください');return;}
+  const code=$('#a_code').value.trim();
+  try{
+    const r=await fetchJSON(API,{method:'POST',
+      body:JSON.stringify({action:'announce',title,note:$('#a_note').value.trim(),cat:$('#a_cat').value,by:$('#a_by').value.trim(),code})});
+    if(!r.ok){showErr(r.error==='BAD_CODE'?'合言葉が違います':(r.error||'投稿できませんでした'));return;}
+    localStorage.setItem('manual_code',code);
+    closeModal();toast('お知らせを投稿しました');
+    M=assemble(await fetchJSON(API+'?action=manual'));render();
+  }catch(e){showErr('通信エラー。もう一度お試しください');}
+}
+function showErr(m){const e=$('#f_err');e.textContent=m;e.style.display='block';}
+function closeModal(){$('#modal').classList.remove('on');}
+$('#modal').addEventListener('click',e=>{if(e.target.id==='modal')closeModal();});
+function toast(m){const t=$('#toast');t.textContent='✅ '+m;t.style.display='block';setTimeout(()=>t.style.display='none',2600);}
+boot();
+</script>
+</body>
+</html>
