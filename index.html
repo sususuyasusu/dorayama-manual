@@ -168,9 +168,20 @@ function assemble(raw){
   updates.reverse();
   return {categories:CATEGORIES,content,updates,today:raw.today};
 }
+const LS_KEY='dorayama_manual_cache_v1';
 async function boot(){
-  try{M=assemble(await fetchJSON(API+'?action=manual'));render();}
-  catch(e){$('#app').innerHTML='<div id="load">⚠️ 読み込めませんでした<br><br><button class="moreu" onclick="boot()">🔄 もう一度</button></div>';}
+  let shownFromCache=false;
+  try{
+    const cached=localStorage.getItem(LS_KEY);
+    if(cached){M=assemble(JSON.parse(cached));render();shownFromCache=true;}
+  }catch(e){}
+  try{
+    const raw=await fetchJSON(API+'?action=manual');
+    try{localStorage.setItem(LS_KEY,JSON.stringify(raw));}catch(e){}
+    M=assemble(raw);render();
+  }catch(e){
+    if(!shownFromCache)$('#app').innerHTML='<div id="load">⚠️ 読み込めませんでした<br><br><button class="moreu" onclick="boot()">🔄 もう一度</button></div>';
+  }
 }
 function daysAgo(dstr){
   const m=String(dstr).match(/(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})/);if(!m)return 999;
