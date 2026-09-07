@@ -219,7 +219,10 @@ function doPost(e) {
         var out = rows.map(function (r) {
           return [String(r.k || ''), String(r.title || ''), String(r.a || ''), stamp];
         });
-        fsh.getRange(2, 1, out.length, FACTS_HEADERS.length).setValues(out);
+        var rng = fsh.getRange(2, 1, out.length, FACTS_HEADERS.length);
+        // 日時列を日付として取り込まれると時差でずれるので、文字列として書く
+        rng.setNumberFormat('@');
+        rng.setValues(out);
       }
       return _json({ ok: true, n: rows.length });
     }
