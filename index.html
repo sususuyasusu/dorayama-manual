@@ -220,6 +220,11 @@ function renderHome(){
       <h2 class="sec">📣 更新のお知らせ</h2>
       <div class="updates" id="updbox">${updHtml(4)||'<div class="upd">お知らせはまだありません</div>'}
         ${upd.length>4?'<button class="moreu" id="moreu">▼ 過去のお知らせもすべて見る（'+upd.length+'件）</button>':''}</div>
+      <h2 class="sec">🤖 AIに聞く</h2>
+      <div class="updates" id="qabox"><div class="upd">読み込み中…</div></div>
+      <button class="moreu" id="askbtn">✏️ 質問する（マニュアルに無いことも）</button>
+      <div style="font-size:12px;color:#888;margin:6px 2px 0">
+        答えは<b>20〜30分後</b>に、この場所に出ます。すぐ知りたいときは店長へ。</div>
       <h2 class="sec">🏪 現場から選ぶ</h2>
       <div class="grid">${cats}</div>
       <div class="foot">
@@ -230,7 +235,67 @@ function renderHome(){
       </div>
     </div>`;
   if($('#moreu'))$('#moreu').onclick=()=>{$('#updbox').innerHTML=updHtml(upd.length);};
+  if($('#askbtn'))$('#askbtn').onclick=openAsk;
   $('#q').oninput=e=>search(e.target.value.trim());
+  loadQA();
+}
+
+/* ───── AIに聞く（質問箱） ───── */
+let QA=[];
+function qaHtml(n){
+  if(!QA.length)return '<div class="upd">まだ質問はありません。何でも聞いてください。</div>';
+  return QA.slice(0,n).map(x=>{
+    const done=x.state==='回答済'&&x.a;
+    return `<div class="upd" style="align-items:flex-start">
+      <div class="d">${esc((x.at||'').replace(/^\d{4}\//,'').slice(0,5))}</div>
+      <div style="flex:1">
+        <div class="tt">${done?'':'<span class="badge">回答待ち</span>'}${esc(x.q)}</div>
+        ${done?`<div class="no" style="white-space:pre-wrap">${esc(x.a)}</div>`
+              :'<div class="no" style="color:#999">20〜30分ほどで答えが出ます</div>'}
+      </div></div>`;}).join('');
+}
+async function loadQA(){
+  try{
+    const r=await fetchJSON(API+'?action=qa');
+    QA=(r&&r.qa)||[];
+  }catch(e){QA=[];}
+  const box=$('#qabox');
+  if(!box)return;
+  box.innerHTML=qaHtml(4)+(QA.length>4?'<button class="moreu" id="moreqa">▼ 過去の質問もすべて見る（'+QA.length+'件）</button>':'');
+  if($('#moreqa'))$('#moreqa').onclick=()=>{$('#qabox').innerHTML=qaHtml(QA.length);};
+}
+function openAsk(){
+  $('#sheetbody').innerHTML=`<h3>🤖 AIに聞く</h3>
+    <div style="font-size:13px;color:#666;margin-bottom:10px">
+      売上・商品・在庫・書類の場所・過去の経緯など、社内のことなら何でも。<br>
+      <b>答えは20〜30分後</b>にトップの「AIに聞く」に出ます。</div>
+    <label>質問 ＊必須</label>
+    <textarea id="k_q" placeholder="例: 先月のあんバターは何個売れましたか？／ルミネ立川の申請書はどこにありますか？"></textarea>
+    <div class="srow"><div><label>あなたの名前</label><input id="k_by" placeholder="例: ひかり"></div>
+    <div><label>合言葉</label><input id="k_code" placeholder="編集用の合言葉"></div></div>
+    <div class="err" id="k_err"></div>
+    <button class="go" id="k_go">この質問を送る</button>
+    <button class="cancel" onclick="closeModal()">やめる</button>`;
+  $('#k_code').value=localStorage.getItem('manual_code')||'';
+  $('#k_by').value=localStorage.getItem('manual_by')||'';
+  $('#modal').classList.add('on');
+  $('#k_go').onclick=submitAsk;
+}
+function kErr(m){const e=$('#k_err');e.textContent=m;e.style.display=m?'block':'none';}
+async function submitAsk(){
+  const q=$('#k_q').value.trim(), by=$('#k_by').value.trim(), code=$('#k_code').value.trim();
+  if(!q){kErr('質問を入れてください');return;}
+  if(!code){kErr('合言葉を入れてください');return;}
+  $('#k_go').disabled=true;kErr('');
+  try{
+    const r=await fetchJSON(API,{method:'POST',headers:{'Content-Type':'text/plain'},
+      body:JSON.stringify({action:'ask',code:code,q:q,by:by})});
+    if(!r||!r.ok){kErr((r&&r.error==='BAD_CODE')?'合言葉がちがいます':'送れませんでした');$('#k_go').disabled=false;return;}
+    localStorage.setItem('manual_code',code);
+    if(by)localStorage.setItem('manual_by',by);
+    closeModal();toast('質問を送りました。20〜30分後に答えが出ます');
+    loadQA();
+  }catch(e){kErr('送れませんでした');$('#k_go').disabled=false;}
 }
 function search(q){
   const box=$('#hits'),home=$('#homebody');

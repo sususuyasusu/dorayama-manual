@@ -12,8 +12,11 @@ var SHEET_ID = '1PRDhGP_4xiO_ZjJP3NB9Id3PmaPa5W7hNyrqFQ5EyqM';
 var T_CONTENT = '_manual_content';
 var T_UPDATES = '_manual_updates';
 var T_CONFIG = '_app_config';
+var T_QA = '_ai_questions';
 var CACHE_KEY = 'manual_payload_v1';
 var CACHE_TTL_SEC = 120;
+var QA_HEADERS = ['id', '日時', '質問', '質問者', '状態', '回答', '回答日時'];
+var QA_MAX_RETURN = 40;
 
 var _SS = null;
 function _ss() {
@@ -51,6 +54,27 @@ function _invalidateCache() {
   CacheService.getScriptCache().remove(CACHE_KEY);
 }
 
+/** 質問箱のタブ。無ければ見出しつきで作る（手作業でのタブ追加を不要にするため） */
+function _shQA() {
+  var sh = _ss().getSheetByName(T_QA);
+  if (!sh) {
+    sh = _ss().insertSheet(T_QA);
+    sh.appendRow(QA_HEADERS);
+    sh.hideSheet();
+  }
+  return sh;
+}
+
+function _qaRows() {
+  var sh = _shQA();
+  if (sh.getLastRow() < 2) return [];
+  return sh.getRange(2, 1, sh.getLastRow() - 1, QA_HEADERS.length).getValues();
+}
+
+function _fmt(d) {
+  return Utilities.formatDate(d, 'Asia/Tokyo', 'yyyy/MM/dd HH:mm');
+}
+
 function doGet(e) {
   var action = (e && e.parameter && e.parameter.action) || 'manual';
   if (action === 'manual') {
@@ -69,6 +93,30 @@ function doGet(e) {
     return ContentService.createTextOutput(payload).setMimeType(ContentService.MimeType.JSON);
   }
   if (action === 'ping') return _json({ ok: true, t: String(new Date()) });
+
+  // 質問箱: 直近のやり取り（画面表示用。合言葉なしで読める）
+  if (action === 'qa') {
+    var rows = _qaRows();
+    var out = rows.slice(Math.max(0, rows.length - QA_MAX_RETURN)).map(function (r) {
+      return { id: String(r[0]), at: String(r[1]), q: String(r[2]), by: String(r[3]),
+               state: String(r[4]), a: String(r[5]), a_at: String(r[6]) };
+    });
+    out.reverse();
+    return _json({ ok: true, qa: out });
+  }
+
+  // 質問箱: まだ答えていないもの（Mac側の定期タスクが取りに来る。合言葉が要る）
+  if (action === 'pending') {
+    if (String((e.parameter && e.parameter.code) || '').trim() !== _code() || !_code()) {
+      return _json({ ok: false, error: 'BAD_CODE' });
+    }
+    var pend = _qaRows().filter(function (r) { return String(r[4]).trim() !== '回答済'; })
+      .map(function (r) {
+        return { id: String(r[0]), at: String(r[1]), q: String(r[2]), by: String(r[3]) };
+      });
+    return _json({ ok: true, pending: pend });
+  }
+
   return _json({ ok: false, error: 'unknown action' });
 }
 
@@ -106,6 +154,31 @@ function doPost(e) {
       _invalidateCache();
       return _json({ ok: true });
     }
+    // 質問箱: スタッフが質問を出す
+    if (p.action === 'ask') {
+      var q = String(p.q || '').trim();
+      if (!q) return _json({ ok: false, error: 'EMPTY' });
+      if (q.length > 500) q = q.slice(0, 500);
+      var now = new Date();
+      var id = 'q' + now.getTime();
+      _shQA().appendRow([id, _fmt(now), q, String(p.by || '').slice(0, 30), '未回答', '', '']);
+      return _json({ ok: true, id: id });
+    }
+
+    // 質問箱: 回答を書き戻す（Mac側の定期タスクが使う）
+    if (p.action === 'answer') {
+      var sh2 = _shQA();
+      var rows2 = _qaRows();
+      for (var j = 0; j < rows2.length; j++) {
+        if (String(rows2[j][0]) === String(p.id)) {
+          sh2.getRange(j + 2, 6, 1, 2).setValues([[String(p.a || ''), _fmt(new Date())]]);
+          sh2.getRange(j + 2, 5).setValue('回答済');
+          return _json({ ok: true });
+        }
+      }
+      return _json({ ok: false, error: 'ID_NOT_FOUND' });
+    }
+
     return _json({ ok: false, error: 'unknown action' });
   } catch (err) {
     return _json({ ok: false, error: String(err) });
