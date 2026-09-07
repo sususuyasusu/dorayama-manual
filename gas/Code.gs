@@ -75,6 +75,12 @@ function _fmt(d) {
   return Utilities.formatDate(d, 'Asia/Tokyo', 'yyyy/MM/dd HH:mm');
 }
 
+/** セルの値を文字列にする。日付として取り込まれていた場合も日本時間で整える */
+function _s(v) {
+  if (v instanceof Date) return _fmt(v);
+  return String(v === null || v === undefined ? '' : v);
+}
+
 function doGet(e) {
   var action = (e && e.parameter && e.parameter.action) || 'manual';
   if (action === 'manual') {
@@ -98,8 +104,8 @@ function doGet(e) {
   if (action === 'qa') {
     var rows = _qaRows();
     var out = rows.slice(Math.max(0, rows.length - QA_MAX_RETURN)).map(function (r) {
-      return { id: String(r[0]), at: String(r[1]), q: String(r[2]), by: String(r[3]),
-               state: String(r[4]), a: String(r[5]), a_at: String(r[6]) };
+      return { id: _s(r[0]), at: _s(r[1]), q: _s(r[2]), by: _s(r[3]),
+               state: _s(r[4]), a: _s(r[5]), a_at: _s(r[6]) };
     });
     out.reverse();
     return _json({ ok: true, qa: out });
@@ -112,7 +118,7 @@ function doGet(e) {
     }
     var pend = _qaRows().filter(function (r) { return String(r[4]).trim() !== '回答済'; })
       .map(function (r) {
-        return { id: String(r[0]), at: String(r[1]), q: String(r[2]), by: String(r[3]) };
+        return { id: _s(r[0]), at: _s(r[1]), q: _s(r[2]), by: _s(r[3]) };
       });
     return _json({ ok: true, pending: pend });
   }
