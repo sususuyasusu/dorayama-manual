@@ -269,7 +269,7 @@ function matchFact(q){
     for(const k of keys)if(nq.includes(k))score+=k.length;
     if(score>bestScore){bestScore=score;best=f;}
   }
-  return bestScore>=3?best:null;
+  return bestScore>=2?best:null;
 }
 function qaHtml(n){
   if(!QA.length)return '<div class="upd">まだ質問はありません。何でも聞いてください。</div>';
