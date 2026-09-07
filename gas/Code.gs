@@ -13,6 +13,8 @@ var T_CONTENT = '_manual_content';
 var T_UPDATES = '_manual_updates';
 var T_CONFIG = '_app_config';
 var T_QA = '_ai_questions';
+var T_FACTS = '_ai_facts';
+var FACTS_HEADERS = ['キー', '見出し', '答え', '更新日時'];
 var CACHE_KEY = 'manual_payload_v1';
 var CACHE_TTL_SEC = 120;
 var QA_HEADERS = ['id', '日時', '質問', '質問者', '状態', '回答', '回答日時'];
@@ -75,6 +77,17 @@ function _fmt(d) {
   return Utilities.formatDate(d, 'Asia/Tokyo', 'yyyy/MM/dd HH:mm');
 }
 
+/** 即答用の「あらかじめ用意した答え」のタブ。無ければ作る */
+function _shFacts() {
+  var sh = _ss().getSheetByName(T_FACTS);
+  if (!sh) {
+    sh = _ss().insertSheet(T_FACTS);
+    sh.appendRow(FACTS_HEADERS);
+    sh.hideSheet();
+  }
+  return sh;
+}
+
 /** セルの値を文字列にする。日付として取り込まれていた場合も日本時間で整える */
 function _s(v) {
   if (v instanceof Date) return _fmt(v);
@@ -133,6 +146,17 @@ function doGet(e) {
     return _json({ ok: true, pending: pend });
   }
 
+  // 即答用データ（画面が起動時に読む。合言葉なし）
+  if (action === 'facts') {
+    var fsh = _shFacts();
+    var frows = fsh.getLastRow() < 2 ? []
+      : fsh.getRange(2, 1, fsh.getLastRow() - 1, FACTS_HEADERS.length).getValues();
+    var facts = frows.map(function (r) {
+      return { k: _s(r[0]), title: _s(r[1]), a: _s(r[2]), at: _s(r[3]) };
+    }).filter(function (x) { return x.k && x.a; });
+    return _json({ ok: true, facts: facts });
+  }
+
   return _json({ ok: false, error: 'unknown action' });
 }
 
@@ -171,14 +195,33 @@ function doPost(e) {
       return _json({ ok: true });
     }
     // 質問箱: スタッフが質問を出す
+    // p.a があれば「その場で答えが出た質問」＝回答済として記録する（何を聞かれたかは残す）
     if (p.action === 'ask') {
       var q = String(p.q || '').trim();
       if (!q) return _json({ ok: false, error: 'EMPTY' });
       if (q.length > 500) q = q.slice(0, 500);
       var now = new Date();
       var id = 'q' + now.getTime();
-      _shQA().appendRow([id, _fmt(now), q, String(p.by || '').slice(0, 30), '未回答', '', '']);
+      var instant = String(p.a || '').trim();
+      _shQA().appendRow([id, _fmt(now), q, String(p.by || '').slice(0, 30),
+                         instant ? '回答済' : '未回答', instant, instant ? _fmt(now) : '']);
       return _json({ ok: true, id: id });
+    }
+
+    // 即答用データの入れ替え（Mac側が毎日流し込む）
+    if (p.action === 'facts_set') {
+      var rows = p.facts || [];
+      var fsh = _shFacts();
+      fsh.clear();
+      fsh.appendRow(FACTS_HEADERS);
+      if (rows.length) {
+        var stamp = _fmt(new Date());
+        var out = rows.map(function (r) {
+          return [String(r.k || ''), String(r.title || ''), String(r.a || ''), stamp];
+        });
+        fsh.getRange(2, 1, out.length, FACTS_HEADERS.length).setValues(out);
+      }
+      return _json({ ok: true, n: rows.length });
     }
 
     // 質問箱: 回答を書き戻す（Mac側の定期タスクが使う）

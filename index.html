@@ -241,7 +241,36 @@ function renderHome(){
 }
 
 /* ───── AIに聞く（質問箱） ───── */
-let QA=[];
+let QA=[],FACTS=[];
+
+/* あらかじめ用意した答えの中から、質問に合うものを探す（その場で答えるため） */
+async function loadFacts(){
+  if(FACTS.length)return FACTS;
+  try{const r=await fetchJSON(API+'?action=facts');FACTS=(r&&r.facts)||[];}catch(e){FACTS=[];}
+  return FACTS;
+}
+function normQ(s){
+  return String(s||'').toLowerCase()
+    .replace(/[\s　、。！？!?\.,・「」（）()]/g,'')
+    .replace(/[ぁ-ん]/g,c=>String.fromCharCode(c.charCodeAt(0)+0x60)); // ひらがな→カタカナで揺れを吸収
+}
+function matchFact(q){
+  const nq=normQ(q);
+  if(!nq)return null;
+  let best=null,bestScore=0;
+  for(const f of FACTS){
+    const keys=String(f.k||'').split('|').map(x=>normQ(x)).filter(Boolean);
+    if(!keys.length)continue;
+    let hit=0;
+    for(const k of keys)if(nq.includes(k))hit++;
+    if(!hit)continue;
+    // 合致したキーの長さの合計を点にする（長い語が当たったほうが確からしい）
+    let score=0;
+    for(const k of keys)if(nq.includes(k))score+=k.length;
+    if(score>bestScore){bestScore=score;best=f;}
+  }
+  return bestScore>=3?best:null;
+}
 function qaHtml(n){
   if(!QA.length)return '<div class="upd">まだ質問はありません。何でも聞いてください。</div>';
   return QA.slice(0,n).map(x=>{
@@ -282,18 +311,34 @@ function openAsk(){
   $('#k_go').onclick=submitAsk;
 }
 function kErr(m){const e=$('#k_err');e.textContent=m;e.style.display=m?'block':'none';}
+function showAnswerNow(q,f){
+  $('#sheetbody').innerHTML=`<h3>🤖 答え</h3>
+    <div style="font-size:13px;color:#8a7f6e;margin-bottom:8px">${esc(q)}</div>
+    <div style="background:#faf6ef;border:1px solid var(--line);border-radius:12px;padding:12px 14px;
+      font-size:14.5px;white-space:pre-wrap">${esc(f.a)}</div>
+    <div style="font-size:11.5px;color:#999;margin-top:8px">
+      ${esc(f.title||'')}${f.at?'（'+esc(f.at)+' 時点）':''}<br>
+      ちがう内容を知りたいときは、もう一度くわしく聞いてください。20〜30分後に調べた答えが出ます。</div>
+    <button class="cancel" onclick="closeModal()">とじる</button>`;
+}
 async function submitAsk(){
   const q=$('#k_q').value.trim(), by=$('#k_by').value.trim(), code=$('#k_code').value.trim();
   if(!q){kErr('質問を入れてください');return;}
   if(!code){kErr('合言葉を入れてください');return;}
   $('#k_go').disabled=true;kErr('');
   try{
+    await loadFacts();
+    const hit=matchFact(q);
     const r=await fetchJSON(API,{method:'POST',headers:{'Content-Type':'text/plain'},
-      body:JSON.stringify({action:'ask',code:code,q:q,by:by})});
+      body:JSON.stringify({action:'ask',code:code,q:q,by:by,a:hit?hit.a:''})});
     if(!r||!r.ok){kErr((r&&r.error==='BAD_CODE')?'合言葉がちがいます':'送れませんでした');$('#k_go').disabled=false;return;}
     localStorage.setItem('manual_code',code);
     if(by)localStorage.setItem('manual_by',by);
-    closeModal();toast('質問を送りました。20〜30分後に答えが出ます');
+    if(hit){
+      showAnswerNow(q,hit);
+    }else{
+      closeModal();toast('質問を送りました。20〜30分後に答えが出ます');
+    }
     loadQA();
   }catch(e){kErr('送れませんでした');$('#k_go').disabled=false;}
 }
