@@ -81,6 +81,16 @@ function _s(v) {
   return String(v === null || v === undefined ? '' : v);
 }
 
+/**
+ * 質問の日時。id は 'q' + 受付時刻のミリ秒 なので、そこから作るのが確実。
+ * 日時セルはスプレッドシートが日付として取り込むと時差がずれるため当てにしない。
+ */
+function _atOf(id, cell) {
+  var m = String(id || '').match(/^q(\d{10,})$/);
+  if (m) return _fmt(new Date(Number(m[1])));
+  return _s(cell);
+}
+
 function doGet(e) {
   var action = (e && e.parameter && e.parameter.action) || 'manual';
   if (action === 'manual') {
@@ -104,7 +114,7 @@ function doGet(e) {
   if (action === 'qa') {
     var rows = _qaRows();
     var out = rows.slice(Math.max(0, rows.length - QA_MAX_RETURN)).map(function (r) {
-      return { id: _s(r[0]), at: _s(r[1]), q: _s(r[2]), by: _s(r[3]),
+      return { id: _s(r[0]), at: _atOf(r[0], r[1]), q: _s(r[2]), by: _s(r[3]),
                state: _s(r[4]), a: _s(r[5]), a_at: _s(r[6]) };
     });
     out.reverse();
@@ -118,7 +128,7 @@ function doGet(e) {
     }
     var pend = _qaRows().filter(function (r) { return String(r[4]).trim() !== '回答済'; })
       .map(function (r) {
-        return { id: _s(r[0]), at: _s(r[1]), q: _s(r[2]), by: _s(r[3]) };
+        return { id: _s(r[0]), at: _atOf(r[0], r[1]), q: _s(r[2]), by: _s(r[3]) };
       });
     return _json({ ok: true, pending: pend });
   }
