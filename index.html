@@ -518,7 +518,7 @@ async function submitAdd(cat){
   let head=label||text;if(head.length>40)head=head.slice(0,39)+'…';
   const body={action:'add',cat,type:typ,label,text,sec:$('#f_sec').value,by:$('#f_by').value.trim(),code:$('#f_code').value.trim()};
   if(ann){body.upd_title=`${cat}に追記`;body.upd_note=head;}
-  await saveCall(body,ann?'追加しました。お知らせにも掲載されます':'追加しました');
+  await saveCall(body,ann?'追加しました。お知らせにも掲載されます':'追加しました',res=>applyAdd(cat,typ,label,text,body.by,res));
 }
 
 function openEdit(n){
@@ -581,14 +581,33 @@ async function submitEdit(n){
   let head=text||label;if(head.length>40)head=head.slice(0,39)+'…';
   const body={action:'edit',cat,n,before:r.o,after:{type:typ,label,text},by:$('#f_by').value.trim(),code:$('#f_code').value.trim()};
   if(ann){body.announce=true;body.upd_title=`${cat}を修正`;body.upd_note=head;}
-  await saveCall(body,ann?'修正しました。お知らせにも掲載されます':'修正しました');
+  await saveCall(body,ann?'修正しました。お知らせにも掲載されます':'修正しました',()=>applyEdit(cat,n,typ,label,text));
 }
 async function submitDelete(n){
   const r=findRow(n);if(!r)return;
-  await saveCall({action:'delete',cat:view.cat,n,before:r.o,by:$('#f_by').value.trim(),code:$('#f_code').value.trim()},'削除しました');
+  const cat=view.cat;
+  await saveCall({action:'delete',cat,n,before:r.o,by:$('#f_by').value.trim(),code:$('#f_code').value.trim()},'削除しました',()=>applyDelete(cat,n));
+}
+/* 保存できた内容は、サーバーの最新を待たずにすぐ画面へ反映する（そのあと裏で最新を取り直して照合する）。
+   n＝シート上の行番号なので、行を足す・消すたびに後ろの行の番号を1ずつずらす */
+const today=()=>{const d=new Date();return d.getFullYear()+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+String(d.getDate()).padStart(2,'0');};
+function shiftRows(from,delta){for(const k in M.content)for(const r of M.content[k])if(r.n>=from)r.n+=delta;}
+function applyAdd(cat,typ,label,text,by,res){
+  shiftRows(res.n,1);
+  const arr=M.content[cat]||(M.content[cat]=[]);
+  arr.splice(arr.filter(x=>x.n<res.n).length,0,{type:typ,label,text,photo:'',src:today()+(by?' '+by:'')+' アプリ追記',n:res.n,o:{type:typ,label,text,photo:''}});
+}
+function applyEdit(cat,n,typ,label,text){
+  const r=(M.content[cat]||[]).find(x=>x.n===n);if(!r)return;
+  r.type=typ;r.label=label;r.text=text;r.o={type:typ,label,text,photo:r.o.photo};
+}
+function applyDelete(cat,n){
+  const arr=M.content[cat]||[],i=arr.findIndex(x=>x.n===n);
+  if(i>=0)arr.splice(i,1);
+  shiftRows(n+1,-1);
 }
 /* 追加・修正・削除の送信。通信が不安定でやり直しても二重に反映されないよう、送信ごとの番号(rid)を付ける */
-async function saveCall(body,okMsg){
+async function saveCall(body,okMsg,applyLocal){
   if(!body.code){showErr('合言葉を入れてください');return;}
   body.rid=newRid();
   const btns=[...document.querySelectorAll('#sheetbody button')];
@@ -607,11 +626,16 @@ async function saveCall(body,okMsg){
     localStorage.setItem('manual_code',body.code);
     if(body.by)localStorage.setItem('manual_by',body.by);
     closeModal();toast(r.unchanged?'変更はありませんでした':okMsg);
-    try{await reloadManual();}catch(e){toast('保存しました。画面は開き直すと更新されます');}
+    if(!r.unchanged&&applyLocal){try{applyLocal(r);render();}catch(e){}}
+    reloadManual().catch(()=>{});
   }catch(e){showErr('通信エラー。電波の良いところでもう一度');unlock();}
 }
+/* 最新を取り直す。続けて保存したときに古い結果が新しい画面を上書きしないよう、いちばん新しい取得だけを使う */
+let reloadSeq=0;
 async function reloadManual(){
+  const my=++reloadSeq;
   const raw=await fetchJSON(API+'?action=manual');
+  if(my!==reloadSeq)return;
   try{localStorage.setItem(LS_KEY,JSON.stringify(raw));}catch(e){}
   M=assemble(raw);render();
 }
