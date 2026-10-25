@@ -104,9 +104,6 @@ h2.sec:after{content:"";flex:1;height:1px;background:rgba(255,255,255,.2)}
 .ph{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);overflow:hidden;margin:10px 0}
 .ph img{width:100%;display:block}
 .ph .cap{font-size:12.5px;font-weight:700;color:#5d5546;padding:8px 12px;background:var(--gray-bg)}
-.addbtn{position:fixed;right:16px;bottom:calc(18px + env(safe-area-inset-bottom));z-index:25;border:0;border-radius:999px;background:var(--coral);
-  padding:13px 20px;font-size:15px;font-weight:800;color:#fff;box-shadow:0 6px 18px rgba(216,85,44,.4)}
-.addbtn:active{transform:scale(.95)}
 /* 検索結果 */
 .hit{background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);padding:10px 12px;margin:8px 0}
 .hit .c{display:inline-block;font-size:11px;font-weight:700;color:#fff;border-radius:6px;padding:1px 7px;margin-bottom:4px}
@@ -144,7 +141,7 @@ h2.sec .ic{width:16px;height:16px;vertical-align:-.2em}
 .search{position:relative}
 .search .ic{position:absolute;left:16px;top:50%;margin-top:-9px;width:18px;height:18px;color:var(--sub);pointer-events:none}
 .search input{padding-left:42px}
-.addbtn .ic,.moreu .ic{width:16px;height:16px;vertical-align:-.25em}
+.moreu .ic{width:16px;height:16px;vertical-align:-.25em}
 .hbtn .ic{width:15px;height:15px;margin-right:4px;vertical-align:-.22em}
 .note.warn,.note.star{display:flex;gap:8px;align-items:flex-start}
 .note .ic{width:17px;height:17px;margin-top:1px}
@@ -205,6 +202,31 @@ h2.sec .ic{width:16px;height:16px;vertical-align:-.2em}
 /* 右へスライドでトップへ戻る：横の動きはこのアプリで受ける（縦スクロールと拡大は今まで通り） */
 html{overscroll-behavior-x:none}
 html,body{touch-action:pan-y pinch-zoom}
+/* 右下のボタン：＋＝追加作成／鉛筆＝修正（修正モード中は「完了」に変わる） */
+.fabs{position:fixed;right:max(14px,calc(50vw - var(--appw)/2 + 14px));bottom:calc(16px + env(safe-area-inset-bottom));z-index:25;display:flex;flex-direction:column;gap:10px;align-items:center}
+.fab{width:58px;height:58px;border-radius:50%;border:0;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:10.5px;font-weight:800;line-height:1.15;box-shadow:0 6px 18px rgba(0,0,0,.3);transition:transform .12s}
+.fab:active{transform:scale(.93)}
+.fab .ic{width:22px;height:22px}
+.fab-add{background:var(--coral);color:#fff;box-shadow:0 6px 18px rgba(216,85,44,.45)}
+.fab-edit{background:var(--card);color:var(--coral);border:2px solid var(--coral)}
+.fab-edit.on{background:var(--coral);color:#fff}
+/* 修正モード：直せる行を点線で囲み、鉛筆の印を付ける。行の上に透明の覆いを重ね、タップで修正画面を開く */
+.edrow{position:relative;outline:2px dashed rgba(255,176,150,.95);outline-offset:3px;border-radius:12px}
+.edcover{position:absolute;inset:-3px;z-index:3;cursor:pointer;border-radius:12px;-webkit-tap-highlight-color:rgba(216,85,44,.25)}
+.edtag{position:absolute;top:-11px;right:-5px;z-index:4;width:24px;height:24px;border-radius:50%;background:var(--coral);color:#fff;display:grid;place-items:center;box-shadow:0 2px 6px rgba(0,0,0,.25);pointer-events:none}
+.edtag .ic{width:13px;height:13px;stroke-width:2.2;vertical-align:0}
+#edhint{position:fixed;left:max(14px,calc(50vw - var(--appw)/2 + 14px));bottom:calc(22px + env(safe-area-inset-bottom));z-index:24;background:rgba(42,36,32,.92);color:#fff;font-size:12.5px;font-weight:700;border-radius:999px;padding:9px 16px;box-shadow:0 6px 20px rgba(0,0,0,.25);pointer-events:none;display:none;max-width:calc(100% - 100px);line-height:1.35}
+body.editing #edhint{display:block}
+/* 追加・修正の画面 */
+.sheet .chk{display:flex;align-items:flex-start;gap:9px;margin:13px 0 0;font-size:13px;font-weight:700;color:var(--ink)}
+.sheet .chk input{width:19px;height:19px;padding:0;flex:none;margin:1px 0 0;accent-color:var(--coral)}
+.sheet .subl{font-size:12.5px;font-weight:700;color:var(--sub);margin:-6px 0 4px}
+.sheet .hint{font-size:12px;color:var(--sub);line-height:1.5;margin:6px 2px 0}
+.sheet .edphoto{width:100%;max-height:160px;object-fit:contain;background:var(--gray-bg);border-radius:10px;margin-bottom:2px}
+.sheet .delbtn{width:100%;border:1.5px solid var(--red);background:none;color:var(--red);border-radius:12px;padding:11px;font-size:14px;font-weight:800;margin-top:10px}
+.sheet .go.danger{background:var(--red);margin-top:10px}
+.sheet .delmsg{font-size:13px;color:#8b2a24;font-weight:700;margin-top:12px;line-height:1.5}
+.sheet button:disabled{opacity:.5}
 </style>
 </head>
 <body>
@@ -223,7 +245,11 @@ html,body{touch-action:pan-y pinch-zoom}
 </div>
 
 <div class="wrap" id="app"><div id="load"><span class="spin"></span>読み込み中…（起動直後は30秒ほどかかることがあります）</div></div>
-<button class="addbtn" id="fab" style="display:none"></button>
+<div class="fabs" id="fabs" style="display:none">
+  <button class="fab fab-edit" id="fabEdit"></button>
+  <button class="fab fab-add" id="fabAdd" aria-label="追加する"></button>
+</div>
+<div id="edhint">修正モード：直したい行をタップ</div>
 
 <div id="modal"><div class="sheet" id="sheetbody"></div></div>
 <div id="toast"></div>
@@ -254,6 +280,7 @@ const ICONS={
   home:'<path d="M4 11.1 12 4l8 7.1V19.6a1.4 1.4 0 0 1-1.4 1.4h-3.8v-5.6H9.2V21H5.4A1.4 1.4 0 0 1 4 19.6V11.1Z"/>',
   down:'<path d="m5.6 9.4 6.4 6.4 6.4-6.4"/>',
   next:'<path d="m9.4 5.6 6.4 6.4-6.4 6.4"/>',
+  plus:'<path d="M12 5.2v13.6M5.2 12h13.6"/>',
   pencil:'<path d="M4.4 19.6 5.2 15 15.6 4.6a2.2 2.2 0 0 1 3.1 3.1L8.3 18.1l-3.9 1.5Z"/><path d="m13.6 6.6 3.8 3.8"/>',
   alert:'<path d="M12 3.9 21 19.6H3L12 3.9Z"/><path d="M12 10.2v4.1"/><circle cx="12" cy="16.9" r=".9" fill="currentColor" stroke="none"/>',
   star:'<path d="m12 3.6 2.6 5.3 5.8.9-4.2 4.1 1 5.8-5.2-2.8-5.2 2.8 1-5.8-4.2-4.1 5.8-.9L12 3.6Z"/>',
@@ -280,7 +307,7 @@ const CATEGORIES=[
  {id:'pc',      name:'PC・コピー機',icon:'printer', short:'PC・コピー', accent:'305496', light:'DCE3EE', sub:'打刻・袋印刷・伝票'},
  {id:'sealer',  name:'シーラー・梱包',icon:'gift', short:'梱包', accent:'1F7A6B', light:'D6EAE4', sub:'箱詰め・袋・発送'},
 ];
-let M=null, view={name:'home'};
+let M=null, view={name:'home'}, editMode=false;
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const catByName=n=>M.categories.find(c=>c.name===n);
@@ -299,11 +326,13 @@ async function fetchJSON(url,opt){
 const fmtDate=s=>{const m=String(s).match(/(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})/);return m?`${+m[1]}/${+m[2]}/${+m[3]}`:String(s);};
 function assemble(raw){
   const content={};
-  for(const r of (raw.content||[])){
+  (raw.content||[]).forEach((r,idx)=>{
     const cat=String(r[0]||'').trim();
-    if(!CATEGORIES.some(c=>c.name===cat))continue;
-    (content[cat]=content[cat]||[]).push({type:String(r[1]||'').trim()||'箇条書き',label:r[2]||'',text:r[3]||'',photo:String(r[4]||'').trim(),src:r[5]||''});
-  }
+    if(!CATEGORIES.some(c=>c.name===cat))return;
+    /* n＝シート上の行番号、o＝シートにある元の文字（修正・削除のとき「画面が見ていた内容」として送り返す） */
+    (content[cat]=content[cat]||[]).push({type:String(r[1]||'').trim()||'箇条書き',label:r[2]||'',text:r[3]||'',photo:String(r[4]||'').trim(),src:r[5]||'',
+      n:idx+2,o:{type:String(r[1]??''),label:String(r[2]??''),text:String(r[3]??''),photo:String(r[4]??'')}});
+  });
   const updates=(raw.updates||[]).filter(r=>r&&String(r[0]).trim())
     .map(r=>({date:fmtDate(r[0]),title:r[1]||'',note:r[2]||'',cat:String(r[3]||'').trim(),by:r[4]||''}));
   updates.reverse();
@@ -328,7 +357,7 @@ function daysAgo(dstr){
   const m=String(dstr).match(/(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})/);if(!m)return 999;
   return Math.floor((new Date(M.today)-new Date(+m[1],+m[2]-1,+m[3]))/86400000);
 }
-function go(v){view=v;window.scrollTo(0,0);render();}
+function go(v){view=v;editMode=false;window.scrollTo(0,0);render();}
 function render(){
   $('#hbtn').style.display=view.name==='home'?'none':'';
   $('#htitle').textContent=view.name==='cat'?view.cat:'スタッフマニュアル';
@@ -339,12 +368,18 @@ function render(){
 function renderNav(){
   const inCat=view.name==='cat';
   document.body.classList.toggle('incat',inCat);
-  const fab=$('#fab');
-  if(!inCat){fab.style.display='none';$('#catnav').innerHTML='';return;}
+  document.body.classList.toggle('editing',inCat&&editMode);
+  const fabs=$('#fabs');
+  if(!inCat){fabs.style.display='none';$('#catnav').innerHTML='';return;}
   $('#catnav').innerHTML=M.categories.map(c=>`<button class="cn${c.name===view.cat?' on':''}" style="--ac:#${c.accent};--lt:#${c.light}" onclick="go({name:'cat',cat:'${esc(c.name)}'})" aria-label="${esc(c.name)}">${ic(c.icon)}<span class="s">${esc(c.short||c.name)}</span><span class="f">${esc(c.name)}</span></button>`).join('');
-  fab.innerHTML=ic('pencil')+' 加筆する';
-  fab.onclick=()=>openAdd(view.cat);
-  fab.style.display='';
+  $('#fabAdd').innerHTML=ic('plus')+'<span>追加</span>';
+  $('#fabAdd').onclick=()=>openAdd(view.cat);
+  const fe=$('#fabEdit');
+  fe.classList.toggle('on',editMode);
+  fe.innerHTML=ic(editMode?'check':'pencil')+'<span>'+(editMode?'完了':'修正')+'</span>';
+  fe.setAttribute('aria-label',editMode?'修正モードを終わる':'修正する');
+  fe.onclick=toggleEdit;
+  fabs.style.display='';
 }
 $('#hbtn').innerHTML=ic('home')+'トップ';
 $('#hbtn').onclick=()=>go({name:'home'});
@@ -377,7 +412,7 @@ function renderHome(){
       <h2 class="sec">${ic('grid')}現場から選ぶ</h2>
       <div class="grid">${cats}</div>
       <div class="foot">
-        ${ic('pencil')} 内容の追加は各ページ右下のボタンから（編集者用）<br>
+        ${ic('pencil')} 内容の追加・修正は、各ページ右下の「追加」「修正」ボタンから（編集者用）<br>
         <a id="annlink" href="javascript:openAnnounce()">${ic('megaphone')} お知らせだけを投稿する</a><br><br>
         <a href="https://dorayama-seizo-app-1.onrender.com/">${ic('chart')} 製造アプリへ</a>
         <a href="https://docs.google.com/spreadsheets/d/1nLCyRaw8ug_U7HVnVwCC490jeRVTdJDKouixA3s6sy0/edit" target="_blank">${ic('printer')} 印刷版（スプレッドシート）</a>
@@ -418,7 +453,7 @@ function renderCat(name){
     <div class="cathead"><span class="e">${ic(c.icon)}</span>
       <div><div class="n">${esc(name)}</div><div class="s">${esc(c.sub)}</div></div></div>`;
   for(const r of rows){
-    const t=r.type;
+    const t=r.type,start=h.length;
     if(t==='見出し')h+=`<div class="bar">${esc(r.text)}</div>`;
     else if(t==='項目')h+=`<div class="item"><span class="lb">${esc(r.label)}</span><span class="tx">${esc(r.text)}</span></div>`;
     else if(t==='箇条書き')h+=`<div class="bul"><span>${esc(r.text)}</span></div>`;
@@ -435,52 +470,153 @@ function renderCat(name){
       const hs=r.label.split('|'),ds=r.text.split('|');
       h+=`<div class="quad">${hs.map((x,i)=>`<div class="q"><div class="qh">${esc(x)}</div><div class="qb">${esc(ds[i]||'')}</div></div>`).join('')}</div>`;}
     else if(t==='写真'&&r.photo)h+=`<div class="ph" onclick="lightbox('./img/${esc(r.photo)}','${esc(r.label)}')"><img loading="lazy" src="./img/${esc(r.photo)}"><div class="cap">${ic('camera')}${esc(r.label)}</div></div>`;
+    if(editMode&&h.length>start)h=h.slice(0,start)+`<div class="edrow">${h.slice(start)}<span class="edcover" onclick="openEdit(${r.n})"></span><i class="edtag">${ic('pencil')}</i></div>`;
     if(r.src&&r.src.includes('アプリ追記')){h+=`<div style="font-size:11px;color:#9a8f7e;margin:-4px 4px 8px;text-align:right">（${esc(r.src)}）</div>`;}
   }
   h+=`<div class="note memo" style="margin-top:18px">※ 旬どら（期間限定商品）の作り方・最新の変更は、必ずLINEグループのノートで確認してください。</div>
-    <div style="height:70px"></div>
+    <div style="height:150px"></div>
     </div>`;
   $('#app').innerHTML=h;
 }
 function lightbox(src,cap){$('#lbimg').src=src;$('#lbcap').textContent=cap;$('#lightbox').style.display='flex';}
 
-/* ---------- 加筆・お知らせ ---------- */
+/* ---------- 追加・修正 ---------- */
+const ERR={BAD_CODE:'合言葉が違います',EMPTY:'内容を入れてください',TOO_LONG:'長すぎます（内容は3000字までです）',BAD_TYPE:'この種類には変えられません',LOCKED:'この部分は図のため、ここからは直せません'};
+const newRid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+const TYPES=['箇条書き','項目','注意','ポイント','メモ','禁止','見出し'];
+const FIXED_TYPES=['流れ','カード','写真'];
+const typeOpts=cur=>TYPES.map(t=>`<option${t===cur?' selected':''}>${t}</option>`).join('');
+const whoFields=()=>`<div class="srow"><div><label>あなたの名前</label><input id="f_by" placeholder="例: ひかり"></div>
+    <div><label>合言葉</label><input id="f_code" placeholder="編集用の合言葉"></div></div>`;
+function fillWho(){$('#f_code').value=localStorage.getItem('manual_code')||'';$('#f_by').value=localStorage.getItem('manual_by')||'';}
+function syncType(p){$('#'+p+'_labelbox').style.display=$('#'+p+'_type').value==='項目'?'':'none';}
+function findRow(n){return (M.content[view.cat]||[]).find(x=>x.n===n);}
+function toggleEdit(){editMode=!editMode;render();}
+
 function openAdd(cat){
-  const c=catByName(cat);
   const secs=(M.content[cat]||[]).filter(r=>r.type==='見出し').map(r=>r.text);
-  $('#sheetbody').innerHTML=`<h3>${ic('pencil')}${esc(cat)} に加筆する</h3>
-    <label>どの見出しのあたり？（メモとして残ります・任意）</label>
-    <select id="f_sec"><option value="">（指定しない）</option>${secs.map(s=>`<option>${esc(s)}</option>`).join('')}</select>
+  $('#sheetbody').innerHTML=`<h3>${ic('plus')}${esc(cat)} に追加する</h3>
+    <label>どこに入れる？</label>
+    <select id="f_sec"><option value="">いちばん最後</option>${secs.map(s=>`<option value="${esc(s)}">「${esc(s)}」の最後</option>`).join('')}</select>
     <div class="srow"><div><label>種類</label>
-      <select id="f_type"><option>箇条書き</option><option>項目</option><option>注意</option><option>メモ</option></select></div>
-    <div><label>ラベル（「項目」のとき）</label><input id="f_label" placeholder="例: 新ルール"></div></div>
+      <select id="f_type" onchange="syncType('f')">${typeOpts('箇条書き')}</select></div>
+    <div id="f_labelbox" style="display:none"><label>ラベル（「項目」のとき）</label><input id="f_label" placeholder="例: 新ルール"></div></div>
     <label>内容 ＊必須</label><textarea id="f_text" placeholder="例: 白あんの補充は残り2個からにする（7/15〜）"></textarea>
-    <div class="srow"><div><label>あなたの名前</label><input id="f_by" placeholder="例: ひかり"></div>
-    <div><label>合言葉</label><input id="f_code" placeholder="編集用の合言葉"></div></div>
+    <label class="chk"><input type="checkbox" id="f_ann" checked><span>スタッフへのお知らせにも載せる</span></label>
+    ${whoFields()}
     <div class="err" id="f_err"></div>
-    <button class="go" onclick="submitAdd('${esc(cat)}')">この内容で加筆する</button>
+    <button class="go" onclick="submitAdd('${esc(cat)}')">この内容で追加する</button>
     <button class="cancel" onclick="closeModal()">やめる</button>`;
-  $('#f_code').value=localStorage.getItem('manual_code')||'';
+  fillWho();
   $('#modal').classList.add('on');
 }
 async function submitAdd(cat){
-  const sec=$('#f_sec').value,typ=$('#f_type').value;
-  let label=$('#f_label').value.trim(),text=$('#f_text').value.trim();
+  const typ=$('#f_type').value,text=$('#f_text').value.trim();
+  const label=typ==='項目'?$('#f_label').value.trim():'';
   if(!text){showErr('内容を入れてください');return;}
-  if(sec&&typ!=='項目'&&!label)label='';
-  if(sec)text=(sec?`【${sec}】`:'')+text;
-  const code=$('#f_code').value.trim(),by=$('#f_by').value.trim();
+  const ann=$('#f_ann').checked;
   let head=label||text;if(head.length>40)head=head.slice(0,39)+'…';
-  try{
-    const r=await fetchJSON(API,{method:'POST',
-      body:JSON.stringify({action:'add',cat,type:typ,label,text,by,code,
-        upd_title:`${cat}に追記`,upd_note:head})});
-    if(!r.ok){showErr(r.error==='BAD_CODE'?'合言葉が違います':(r.error||'保存できませんでした'));return;}
-    localStorage.setItem('manual_code',code);
-    closeModal();toast('保存しました。お知らせにも掲載されます');
-    M=assemble(await fetchJSON(API+'?action=manual'));render();
-  }catch(e){showErr('通信エラー。電波の良いところでもう一度');}
+  const body={action:'add',cat,type:typ,label,text,sec:$('#f_sec').value,by:$('#f_by').value.trim(),code:$('#f_code').value.trim()};
+  if(ann){body.upd_title=`${cat}に追記`;body.upd_note=head;}
+  await saveCall(body,ann?'追加しました。お知らせにも掲載されます':'追加しました');
 }
+
+function openEdit(n){
+  const r=findRow(n);if(!r)return;
+  const cat=view.cat,t=r.type;
+  if(t==='冷蔵庫'){
+    $('#sheetbody').innerHTML=`<h3>${ic('pencil')}この部分は直せません</h3>
+      <div class="hint">冷蔵庫の置き方の図は、決まった図のため、ここからは修正できません。</div>
+      <button class="cancel" onclick="closeModal()">閉じる</button>`;
+    $('#modal').classList.add('on');return;
+  }
+  let body='';
+  if(!FIXED_TYPES.includes(t)){
+    body=`<label>種類</label><select id="e_type" onchange="syncType('e')">${typeOpts(TYPES.includes(t)?t:'箇条書き')}</select>
+      <div id="e_labelbox"><label>ラベル（「項目」のとき）</label><input id="e_label" value="${esc(r.label)}"></div>
+      <label>${t==='見出し'?'見出しの文字':'内容'} ＊必須</label><textarea id="e_text">${esc(r.text)}</textarea>`;
+  }else if(t==='流れ'){
+    body=`<label>流れ ＊必須</label><textarea id="e_text">${esc(r.text)}</textarea>
+      <div class="hint">矢印（ → ）の前後に空白を入れて区切ります。例: 来る → 着替える → 打刻する</div>`;
+  }else if(t==='カード'){
+    body=`<label>見出し部分（「|」で区切る） ＊必須</label><textarea id="e_label">${esc(r.label)}</textarea>
+      <label>内容（「|」で区切る・改行もできます）</label><textarea id="e_text">${esc(r.text)}</textarea>
+      <div class="hint">「|」で区切った順に、横に並ぶ箱になります（見出しと内容の数をそろえてください）。</div>`;
+  }else{
+    body=`<img class="edphoto" src="./img/${esc(r.photo)}" alt="">
+      <label>写真の説明 ＊必須</label><textarea id="e_label">${esc(r.label)}</textarea>
+      <div class="hint">写真そのものは、ここからは入れ替えられません（説明文だけ直せます）。</div>`;
+  }
+  $('#sheetbody').innerHTML=`<h3>${ic('pencil')}この行を修正する</h3>
+    <div class="subl">${esc(cat)}　／　${esc(t)}</div>
+    ${body}
+    <label class="chk"><input type="checkbox" id="f_ann"><span>スタッフへのお知らせにも載せる（大きなルール変更のとき）</span></label>
+    ${whoFields()}
+    <div class="err" id="f_err"></div>
+    <button class="go" onclick="submitEdit(${n})">この内容で保存する</button>
+    <button class="delbtn" id="e_del" onclick="askDelete()">この行を削除する</button>
+    <div id="e_delbox" style="display:none"><div class="delmsg">この行を削除します。よろしいですか？（消した内容は、シートの記録に残ります）</div>
+      <button class="go danger" onclick="submitDelete(${n})">削除する</button></div>
+    <button class="cancel" onclick="closeModal()">やめる</button>`;
+  fillWho();
+  if(!FIXED_TYPES.includes(t))syncType('e');
+  $('#modal').classList.add('on');
+}
+function askDelete(){
+  $('#e_del').style.display='none';$('#e_delbox').style.display='';
+  $('#e_delbox').scrollIntoView({block:'nearest',behavior:'smooth'});
+}
+async function submitEdit(n){
+  const r=findRow(n);if(!r)return;
+  const cat=view.cat,t=r.type;
+  let typ=t,label='',text='';
+  if(!FIXED_TYPES.includes(t)){typ=$('#e_type').value;label=typ==='項目'?$('#e_label').value.trim():'';text=$('#e_text').value.trim();}
+  else if(t==='流れ'){text=$('#e_text').value.trim();}
+  else if(t==='カード'){label=$('#e_label').value.trim();text=$('#e_text').value.trim();}
+  else{label=$('#e_label').value.trim();text=r.o.text;}
+  if(t==='写真'){if(!label){showErr('写真の説明を入れてください');return;}}
+  else if(t==='カード'&&!label){showErr('見出し部分を入れてください');return;}
+  else if(!text){showErr('内容を入れてください');return;}
+  const ann=$('#f_ann').checked;
+  let head=text||label;if(head.length>40)head=head.slice(0,39)+'…';
+  const body={action:'edit',cat,n,before:r.o,after:{type:typ,label,text},by:$('#f_by').value.trim(),code:$('#f_code').value.trim()};
+  if(ann){body.announce=true;body.upd_title=`${cat}を修正`;body.upd_note=head;}
+  await saveCall(body,ann?'修正しました。お知らせにも掲載されます':'修正しました');
+}
+async function submitDelete(n){
+  const r=findRow(n);if(!r)return;
+  await saveCall({action:'delete',cat:view.cat,n,before:r.o,by:$('#f_by').value.trim(),code:$('#f_code').value.trim()},'削除しました');
+}
+/* 追加・修正・削除の送信。通信が不安定でやり直しても二重に反映されないよう、送信ごとの番号(rid)を付ける */
+async function saveCall(body,okMsg){
+  if(!body.code){showErr('合言葉を入れてください');return;}
+  body.rid=newRid();
+  const btns=[...document.querySelectorAll('#sheetbody button')];
+  btns.forEach(b=>b.disabled=true);
+  const unlock=()=>btns.forEach(b=>b.disabled=false);
+  try{
+    const r=await fetchJSON(API,{method:'POST',body:JSON.stringify(body)});
+    if(!r.ok){
+      if(r.error==='CHANGED'){
+        closeModal();
+        try{await reloadManual();}catch(e){}
+        toast('ほかの人が先に変更していました。最新の内容に更新しました');return;
+      }
+      showErr(ERR[r.error]||r.error||'保存できませんでした');unlock();return;
+    }
+    localStorage.setItem('manual_code',body.code);
+    if(body.by)localStorage.setItem('manual_by',body.by);
+    closeModal();toast(r.unchanged?'変更はありませんでした':okMsg);
+    try{await reloadManual();}catch(e){toast('保存しました。画面は開き直すと更新されます');}
+  }catch(e){showErr('通信エラー。電波の良いところでもう一度');unlock();}
+}
+async function reloadManual(){
+  const raw=await fetchJSON(API+'?action=manual');
+  try{localStorage.setItem(LS_KEY,JSON.stringify(raw));}catch(e){}
+  M=assemble(raw);render();
+}
+
+/* ---------- お知らせ ---------- */
 function openAnnounce(){
   $('#sheetbody').innerHTML=`<h3>${ic('megaphone')}お知らせを投稿する</h3>
     <label>タイトル ＊必須</label><input id="a_title" placeholder="例: 7/20から営業時間が変わります">
