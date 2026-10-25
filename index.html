@@ -91,7 +91,6 @@ h2.sec:after{content:"";flex:1;height:1px;background:rgba(255,255,255,.2)}
 .note.memo{background:var(--amber-bg);color:#8a5a00;border:1px solid #f0d9a0}
 .note.star{background:var(--amber-bg);color:#7a4d00;border:1px solid #f0d9a0;border-left:5px solid var(--amber)}
 .ng{background:#fdecea;border:1px solid #f0c4c1;color:#8b2a24;border-radius:12px;padding:10px 12px;margin:7px 0;font-weight:800;font-size:14px;display:flex;gap:9px}
-.ng:before{content:"✕";background:var(--red);color:#fff;border-radius:7px;padding:0 7px;font-weight:800;align-self:flex-start}
 .flow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:8px 0}
 .flow .st{background:var(--card);border:1.5px solid var(--ac);color:var(--ac);border-radius:10px;padding:6px 10px;font-weight:800;font-size:13px}
 .flow .st.last{background:var(--ac);color:#fff}
@@ -139,6 +138,32 @@ mark{background:#ffe28a;border-radius:3px;padding:0 1px}
 #lightbox img{max-width:92vw;max-height:80vh;border-radius:16px;box-shadow:0 22px 60px rgba(0,0,0,.55)}
 #lightbox .cap{color:#eee;font-size:13px;padding:0 16px;text-align:center}
 #load{padding:60px 0;text-align:center;color:var(--onbg);font-size:14px;line-height:1.8}
+/* アイコン（在庫アプリの下タブと同じ：細い線・丸い端・単色） */
+.ic{width:1.2em;height:1.2em;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.22em;flex:none}
+h2.sec .ic{width:16px;height:16px;vertical-align:-.2em}
+.cat-card .e,.cathead .e{color:var(--ac)}
+.cat-card .e .ic{width:20px;height:20px;vertical-align:0}
+.cathead .e .ic{width:24px;height:24px;vertical-align:0}
+.search{position:relative}
+.search .ic{position:absolute;left:16px;top:50%;margin-top:-9px;width:18px;height:18px;color:var(--sub);pointer-events:none}
+.search input{padding-left:42px}
+.backrow button .ic,.addbtn .ic,.moreu .ic{width:16px;height:16px;vertical-align:-.25em}
+.hbtn .ic{width:15px;height:15px;margin-right:4px;vertical-align:-.22em}
+.note.warn,.note.star{display:flex;gap:8px;align-items:flex-start}
+.note .ic{width:17px;height:17px;margin-top:1px}
+.note.warn .ic{color:var(--coral)}
+.note.star .ic{color:var(--amber)}
+.ng .x{flex:none;width:22px;height:22px;border-radius:7px;background:var(--red);color:#fff;display:grid;place-items:center;align-self:flex-start}
+.ng .x .ic{width:14px;height:14px;stroke-width:2.4;vertical-align:0}
+.flow .ar{display:inline-flex;align-items:center}
+.flow .ar .ic{width:15px;height:15px;vertical-align:0}
+.ph .cap .ic{width:15px;height:15px;vertical-align:-.25em;margin-right:4px;color:var(--sub)}
+.sheet h3 .ic{width:20px;height:20px;vertical-align:-.28em;margin-right:5px;color:var(--coral)}
+.foot .ic{width:15px;height:15px;vertical-align:-.25em;margin-right:3px}
+#toast .ic{width:17px;height:17px;vertical-align:-.3em;margin-right:5px}
+.hit .c .ic{width:13px;height:13px;vertical-align:-.2em;margin-right:3px}
+.spin{display:inline-block;width:18px;height:18px;border:2px solid rgba(255,255,255,.25);border-top-color:var(--cream);border-radius:50%;animation:spin .7s linear infinite;vertical-align:-4px;margin-right:8px}
+@keyframes spin{to{transform:rotate(360deg)}}
 @media(min-width:768px){:root{--appw:640px}}
 </style>
 </head>
@@ -149,11 +174,11 @@ mark{background:#ffe28a;border-radius:3px;padding:0 1px}
   <div class="topbar-backdrop" aria-hidden="true"><div class="topbar-grain"></div><div class="topbar-pattern"></div></div>
   <header class="top">
     <div class="ttl"><img class="hdlogo" src="./img/header-logo.png" alt="どら山"><span id="htitle">スタッフマニュアル</span></div>
-    <button id="hbtn" class="hbtn" style="display:none">🏠 トップ</button>
+    <button id="hbtn" class="hbtn" style="display:none">トップ</button>
   </header>
 </div>
 
-<div class="wrap" id="app"><div id="load">⏳ 読み込み中…（起動直後は30秒ほどかかることがあります）</div></div>
+<div class="wrap" id="app"><div id="load"><span class="spin"></span>読み込み中…（起動直後は30秒ほどかかることがあります）</div></div>
 
 <div id="modal"><div class="sheet" id="sheetbody"></div></div>
 <div id="toast"></div>
@@ -162,19 +187,54 @@ mark{background:#ffe28a;border-radius:3px;padding:0 1px}
 <script>
 // ===== 独立版設定: データはGoogle Apps Script(本人アカウント)経由で製造表の裏タブを読み書き =====
 const API='https://script.google.com/macros/s/AKfycbye-3UwADfDDbkH68LuVxv1wA-TI1eMo9BTEUa5H7RFJ8KqMbpsvtHUhZeh8mon1Hqq/exec';
+/* シンプルな線のアイコン（在庫アプリの下タブと同じ描き方：24マス・線の太さ1.8・丸い端・単色） */
+const ICONS={
+  /* ── 現場（12） ── */
+  user:'<circle cx="12" cy="8.2" r="3.7"/><path d="M4.9 20.2c.8-3.8 3.7-6 7.1-6s6.3 2.2 7.1 6"/>',
+  shield:'<path d="M12 3.2 19.6 6v5.7c0 4.6-3.2 8-7.6 9.6-4.4-1.6-7.6-5-7.6-9.6V6L12 3.2Z"/><path d="m8.9 12.2 2.3 2.3 4.1-4.5"/>',
+  door:'<path d="M6.4 21V4.9A1.9 1.9 0 0 1 8.3 3h7.4a1.9 1.9 0 0 1 1.9 1.9V21M3.8 21h16.4"/><circle cx="14.4" cy="12.4" r=".95" fill="currentColor" stroke="none"/>',
+  egg:'<path d="M12 3.4c-3.6 0-6.6 5.4-6.6 9.9a6.6 6.6 0 0 0 13.2 0c0-4.5-3-9.9-6.6-9.9Z"/>',
+  bowl:'<path d="M3.6 11.6h16.8a8.4 8.4 0 0 1-16.8 0Z"/><path d="m15.9 3.8-3.7 7.8"/>',
+  flame:'<path d="M12 21c3.3 0 5.7-2.2 5.7-5.4 0-2.1-1-3.7-2.2-5-.4 1.3-1.2 2.1-2.3 2.6.2-3.1-.9-6-3.6-8.2.1 2.7-.9 4.3-2.2 5.9-.9 1.1-1.1 2.6-1.1 4.1C6.3 18.8 8.7 21 12 21Z"/>',
+  chef:'<path d="M7.4 14.4c-2.3-.4-4-2.2-4-4.5 0-2.5 2-4.5 4.5-4.5.3 0 .6 0 .9.1A4.7 4.7 0 0 1 12 3.2c1.9 0 3.6 1.1 4.4 2.7.3-.1.5-.1.8-.1 2.5 0 4.5 2 4.5 4.5 0 2.3-1.7 4.1-4 4.5"/><path d="M7.4 14.4V20a1 1 0 0 0 1 1h7.2a1 1 0 0 0 1-1v-5.6M7.4 17.3h9.2"/>',
+  bag:'<path d="M5.4 8.2h13.2l1 11.6a1.7 1.7 0 0 1-1.7 1.8H6.1a1.7 1.7 0 0 1-1.7-1.8l1-11.6Z"/><path d="M8.8 8.2V7a3.2 3.2 0 0 1 6.4 0v1.2"/>',
+  tag:'<path d="M3.7 12.3V5.4a1.7 1.7 0 0 1 1.7-1.7h6.9c.45 0 .88.18 1.2.5l7.2 7.2a1.7 1.7 0 0 1 0 2.4l-6.9 6.9a1.7 1.7 0 0 1-2.4 0l-7.2-7.2a1.7 1.7 0 0 1-.5-1.2Z"/><circle cx="8.3" cy="8.3" r="1.1" fill="currentColor" stroke="none"/>',
+  cube:'<path d="m12 2.7 8.2 4.5v9.4L12 21.2l-8.2-4.6V7.2L12 2.7Z"/><path d="m3.8 7.2 8.2 4.6 8.2-4.6M12 11.8v9.4M8 4.9l8.3 4.5v3.3"/>',
+  printer:'<path d="M7.5 8V3.8h9V8"/><path d="M7.5 17.4H5.6a2.1 2.1 0 0 1-2.1-2.1v-4.1A3.2 3.2 0 0 1 6.7 8h10.6a3.2 3.2 0 0 1 3.2 3.2v4.1a2.1 2.1 0 0 1-2.1 2.1h-1.9"/><rect x="7.5" y="14" width="9" height="6.4" rx="1"/>',
+  gift:'<path d="M5 11v8.4A1.6 1.6 0 0 0 6.6 21h10.8a1.6 1.6 0 0 0 1.6-1.6V11"/><rect x="3" y="7.3" width="18" height="3.7" rx="1"/><path d="M12 7.3V21"/><path d="M12 7.3c-1.8 0-4-.6-4-2.2a1.9 1.9 0 0 1 3.2-1.3c.6.6.8 1.8.8 3.5ZM12 7.3c1.8 0 4-.6 4-2.2a1.9 1.9 0 0 0-3.2-1.3c-.6.6-.8 1.8-.8 3.5Z"/>',
+  /* ── 画面の部品 ── */
+  bell:'<path d="M17.5 10.2v3.1c0 1.7.8 2.8 1.9 3.8H4.6c1.1-1 1.9-2.1 1.9-3.8v-3.1a5.5 5.5 0 0 1 9-4.2"/><path d="M10 20h4"/><circle cx="18.4" cy="5.3" r="2.3" fill="currentColor" stroke="none"/>',
+  grid:'<rect x="3.8" y="3.8" width="6.8" height="6.8" rx="1.6"/><rect x="13.4" y="3.8" width="6.8" height="6.8" rx="1.6"/><rect x="3.8" y="13.4" width="6.8" height="6.8" rx="1.6"/><rect x="13.4" y="13.4" width="6.8" height="6.8" rx="1.6"/>',
+  search:'<circle cx="10.6" cy="10.6" r="6.2"/><path d="m15.3 15.3 5 5"/>',
+  home:'<path d="M4 11.1 12 4l8 7.1V19.6a1.4 1.4 0 0 1-1.4 1.4h-3.8v-5.6H9.2V21H5.4A1.4 1.4 0 0 1 4 19.6V11.1Z"/>',
+  back:'<path d="m14.6 5.6-6.4 6.4 6.4 6.4"/>',
+  down:'<path d="m5.6 9.4 6.4 6.4 6.4-6.4"/>',
+  next:'<path d="m9.4 5.6 6.4 6.4-6.4 6.4"/>',
+  pencil:'<path d="M4.4 19.6 5.2 15 15.6 4.6a2.2 2.2 0 0 1 3.1 3.1L8.3 18.1l-3.9 1.5Z"/><path d="m13.6 6.6 3.8 3.8"/>',
+  alert:'<path d="M12 3.9 21 19.6H3L12 3.9Z"/><path d="M12 10.2v4.1"/><circle cx="12" cy="16.9" r=".9" fill="currentColor" stroke="none"/>',
+  star:'<path d="m12 3.6 2.6 5.3 5.8.9-4.2 4.1 1 5.8-5.2-2.8-5.2 2.8 1-5.8-4.2-4.1 5.8-.9L12 3.6Z"/>',
+  camera:'<path d="M4 8.4a1.8 1.8 0 0 1 1.8-1.8h2.1l1.2-2h5.8l1.2 2h2.1A1.8 1.8 0 0 1 20 8.4v8.9a1.8 1.8 0 0 1-1.8 1.8H5.8A1.8 1.8 0 0 1 4 17.3V8.4Z"/><circle cx="12" cy="12.8" r="3.3"/>',
+  check:'<circle cx="12" cy="12" r="8.6"/><path d="m8.2 12.4 2.7 2.7 4.9-5.4"/>',
+  chart:'<path d="M4 20V10h4v10M10 20V4h4v16M16 20v-7h4v7"/>',
+  refresh:'<path d="M19.6 11a7.7 7.7 0 0 0-13.6-3.3L4.4 9.4"/><path d="M4.4 4.8v4.6h4.6"/><path d="M4.4 13a7.7 7.7 0 0 0 13.6 3.3l1.6-1.7"/><path d="M19.6 19.2v-4.6H15"/>',
+  megaphone:'<path d="M4 10.2v3.6a1 1 0 0 0 1 1h2.2L13.5 19V5L7.2 9.2H5a1 1 0 0 0-1 1Z"/><path d="M16.8 9.2a4.3 4.3 0 0 1 0 5.6"/>',
+  x:'<path d="m6.6 6.6 10.8 10.8M17.4 6.6 6.6 17.4"/>',
+  arrow:'<path d="M5 12h14m-5.6-5.6L19 12l-5.6 5.6"/>'
+};
+const ic=(n,c)=>`<svg class="ic${c?' '+c:''}" viewBox="0 0 24 24" aria-hidden="true">${ICONS[n]||''}</svg>`;
 const CATEGORIES=[
- {id:'shinjin', name:'はじめての人',emoji:'🔰', accent:'00838F', light:'D9EEF1', sub:'初日ガイド・教え方'},
- {id:'common',  name:'共通',        emoji:'⭐', accent:'595959', light:'EDEDED', sub:'全員で守るルール'},
- {id:'iriguchi',name:'入口',        emoji:'🚪', accent:'8B5E3C', light:'F3E5D8', sub:'出勤・開店・閉店'},
- {id:'shikomi', name:'仕込み台',    emoji:'🥚', accent:'C55A11', light:'FCE4D6', sub:'たまご管理・仕込み'},
- {id:'kiji',    name:'生地作り',    emoji:'🥣', accent:'BF8F00', light:'FBE9C7', sub:'タネづくり'},
- {id:'yakidai', name:'焼台',        emoji:'🔥', accent:'9E3D3D', light:'F2DCDC', sub:'焼き・銅板清掃'},
- {id:'seizou',  name:'製造作業台',  emoji:'🫘', accent:'538135', light:'E2EFDA', sub:'あんこ・生どら・フルーツ'},
- {id:'counter', name:'カウンター',  emoji:'🛍️', accent:'2E75B6', light:'DDEBF7', sub:'接客・レジ・クレーム対応'},
- {id:'shouhin', name:'商品知識',    emoji:'🏷️', accent:'C2185B', light:'F8DCE8', sub:'アレルゲン・期限・価格'},
- {id:'tana',    name:'材料などの棚',emoji:'📦', accent:'7030A0', light:'E6DCF0', sub:'在庫・発注'},
- {id:'pc',      name:'PC・コピー機',emoji:'🖨️', accent:'305496', light:'DCE3EE', sub:'打刻・袋印刷・伝票'},
- {id:'sealer',  name:'シーラー・梱包',emoji:'🎁', accent:'1F7A6B', light:'D6EAE4', sub:'箱詰め・袋・発送'},
+ {id:'shinjin', name:'はじめての人',icon:'user', accent:'00838F', light:'D9EEF1', sub:'初日ガイド・教え方'},
+ {id:'common',  name:'共通',        icon:'shield', accent:'595959', light:'EDEDED', sub:'全員で守るルール'},
+ {id:'iriguchi',name:'入口',        icon:'door', accent:'8B5E3C', light:'F3E5D8', sub:'出勤・開店・閉店'},
+ {id:'shikomi', name:'仕込み台',    icon:'egg', accent:'C55A11', light:'FCE4D6', sub:'たまご管理・仕込み'},
+ {id:'kiji',    name:'生地作り',    icon:'bowl', accent:'BF8F00', light:'FBE9C7', sub:'タネづくり'},
+ {id:'yakidai', name:'焼台',        icon:'flame', accent:'9E3D3D', light:'F2DCDC', sub:'焼き・銅板清掃'},
+ {id:'seizou',  name:'製造作業台',  icon:'chef', accent:'538135', light:'E2EFDA', sub:'あんこ・生どら・フルーツ'},
+ {id:'counter', name:'カウンター',  icon:'bag', accent:'2E75B6', light:'DDEBF7', sub:'接客・レジ・クレーム対応'},
+ {id:'shouhin', name:'商品知識',    icon:'tag', accent:'C2185B', light:'F8DCE8', sub:'アレルゲン・期限・価格'},
+ {id:'tana',    name:'材料などの棚',icon:'cube', accent:'7030A0', light:'E6DCF0', sub:'在庫・発注'},
+ {id:'pc',      name:'PC・コピー機',icon:'printer', accent:'305496', light:'DCE3EE', sub:'打刻・袋印刷・伝票'},
+ {id:'sealer',  name:'シーラー・梱包',icon:'gift', accent:'1F7A6B', light:'D6EAE4', sub:'箱詰め・袋・発送'},
 ];
 let M=null, view={name:'home'};
 const $=s=>document.querySelector(s);
@@ -217,7 +277,7 @@ async function boot(){
     try{localStorage.setItem(LS_KEY,JSON.stringify(raw));}catch(e){}
     M=assemble(raw);render();
   }catch(e){
-    if(!shownFromCache)$('#app').innerHTML='<div id="load">⚠️ 読み込めませんでした<br><br><button class="moreu" onclick="boot()">🔄 もう一度</button></div>';
+    if(!shownFromCache)$('#app').innerHTML='<div id="load">'+ic('alert')+' 読み込めませんでした<br><br><button class="moreu" onclick="boot()">'+ic('refresh')+' もう一度</button></div>';
   }
 }
 function daysAgo(dstr){
@@ -230,6 +290,7 @@ function render(){
   $('#htitle').textContent=view.name==='cat'?view.cat:'スタッフマニュアル';
   if(view.name==='home')renderHome();else renderCat(view.cat);
 }
+$('#hbtn').innerHTML=ic('home')+'トップ';
 $('#hbtn').onclick=()=>go({name:'home'});
 
 /* ---------- ホーム ---------- */
@@ -248,22 +309,22 @@ function renderHome(){
     const n=(M.content[c.name]||[]).length;
     return `<button class="cat-card" style="--ac:#${c.accent};--lt:#${c.light}"
       onclick="go({name:'cat',cat:'${esc(c.name)}'})">
-      <span class="e">${c.emoji}</span><span class="n">${esc(c.name)}</span>
+      <span class="e">${ic(c.icon)}</span><span class="n">${esc(c.name)}</span>
       <span class="s">${esc(c.sub)}・${n}項目</span></button>`;}).join('');
   $('#app').innerHTML=`
-    <div class="search"><input id="q" placeholder="🔍 さがす（例: あんこ / 両替 / シーラー）"></div>
+    <div class="search">${ic('search')}<input id="q" placeholder="さがす（例: あんこ / 両替 / シーラー）"></div>
     <div id="hits"></div>
     <div id="homebody">
-      <h2 class="sec">📣 更新のお知らせ</h2>
+      <h2 class="sec">${ic('bell')}更新のお知らせ</h2>
       <div class="updates" id="updbox">${updHtml(4)||'<div class="upd">お知らせはまだありません</div>'}
-        ${upd.length>4?'<button class="moreu" id="moreu">▼ 過去のお知らせもすべて見る（'+upd.length+'件）</button>':''}</div>
-      <h2 class="sec">🏪 現場から選ぶ</h2>
+        ${upd.length>4?'<button class="moreu" id="moreu">'+ic('down')+' 過去のお知らせもすべて見る（'+upd.length+'件）</button>':''}</div>
+      <h2 class="sec">${ic('grid')}現場から選ぶ</h2>
       <div class="grid">${cats}</div>
       <div class="foot">
-        ✏️ 内容の追加は各ページ右下のボタンから（編集者用）<br>
-        <a id="annlink" href="javascript:openAnnounce()">📣 お知らせだけを投稿する</a><br><br>
-        <a href="https://dorayama-seizo-app-1.onrender.com/">📊 製造アプリへ</a>
-        <a href="https://docs.google.com/spreadsheets/d/1nLCyRaw8ug_U7HVnVwCC490jeRVTdJDKouixA3s6sy0/edit" target="_blank">🖨️ 印刷版（スプレッドシート）</a>
+        ${ic('pencil')} 内容の追加は各ページ右下のボタンから（編集者用）<br>
+        <a id="annlink" href="javascript:openAnnounce()">${ic('megaphone')} お知らせだけを投稿する</a><br><br>
+        <a href="https://dorayama-seizo-app-1.onrender.com/">${ic('chart')} 製造アプリへ</a>
+        <a href="https://docs.google.com/spreadsheets/d/1nLCyRaw8ug_U7HVnVwCC490jeRVTdJDKouixA3s6sy0/edit" target="_blank">${ic('printer')} 印刷版（スプレッドシート）</a>
       </div>
     </div>`;
   if($('#moreu'))$('#moreu').onclick=()=>{$('#updbox').innerHTML=updHtml(upd.length);};
@@ -287,7 +348,7 @@ function search(q){
   const hl=t=>esc(t).split(esc(q)).join('<mark>'+esc(q)+'</mark>');
   box.innerHTML=hits.length?hits.map(h=>`
     <div class="hit" onclick="go({name:'cat',cat:'${esc(h.cat.name)}'})">
-      <span class="c" style="background:#${h.cat.accent}">${h.cat.emoji} ${esc(h.cat.name)}</span>
+      <span class="c" style="background:#${h.cat.accent}">${ic(h.cat.icon)}${esc(h.cat.name)}</span>
       <div class="h">${h.r.label?hl(h.r.label):esc(h.sec)}</div>
       <div class="t">${hl(h.r.text.slice(0,90))}${h.r.text.length>90?'…':''}</div>
     </div>`).join(''):'<div class="hit">「'+esc(q)+'」は見つかりませんでした</div>';
@@ -298,19 +359,19 @@ function renderCat(name){
   const c=catByName(name);if(!c){go({name:'home'});return;}
   const rows=M.content[name]||[];
   let h=`<div class="catpage" style="--ac:#${c.accent};--lt:#${c.light}">
-    <div class="backrow"><button onclick="go({name:'home'})">← トップへ</button></div>
-    <div class="cathead"><span class="e">${c.emoji}</span>
+    <div class="backrow"><button onclick="go({name:'home'})">${ic('back')} トップへ</button></div>
+    <div class="cathead"><span class="e">${ic(c.icon)}</span>
       <div><div class="n">${esc(name)}</div><div class="s">${esc(c.sub)}</div></div></div>`;
   for(const r of rows){
     const t=r.type;
     if(t==='見出し')h+=`<div class="bar">${esc(r.text)}</div>`;
     else if(t==='項目')h+=`<div class="item"><span class="lb">${esc(r.label)}</span><span class="tx">${esc(r.text)}</span></div>`;
     else if(t==='箇条書き')h+=`<div class="bul"><span>${esc(r.text)}</span></div>`;
-    else if(t==='注意')h+=`<div class="note warn">⚠️ ${esc(r.text)}</div>`;
+    else if(t==='注意')h+=`<div class="note warn">${ic('alert')}<span>${esc(r.text)}</span></div>`;
     else if(t==='メモ')h+=`<div class="note memo">${esc(r.text)}</div>`;
-    else if(t==='ポイント')h+=`<div class="note star">★ ${esc(r.text)}</div>`;
-    else if(t==='禁止')h+=`<div class="ng"><span>${esc(r.text)}</span></div>`;
-    else if(t==='流れ')h+=`<div class="flow">${r.text.split(' → ').map((s,i,a)=>`<span class="st${i===a.length-1?' last':''}">${esc(s)}</span>${i<a.length-1?'<span class="ar">→</span>':''}`).join('')}</div>`;
+    else if(t==='ポイント')h+=`<div class="note star">${ic('star')}<span>${esc(r.text)}</span></div>`;
+    else if(t==='禁止')h+=`<div class="ng"><i class="x">${ic('x')}</i><span>${esc(r.text)}</span></div>`;
+    else if(t==='流れ')h+=`<div class="flow">${r.text.split(' → ').map((s,i,a)=>`<span class="st${i===a.length-1?' last':''}">${esc(s)}</span>${i<a.length-1?'<span class="ar">'+ic('next')+'</span>':''}`).join('')}</div>`;
     else if(t==='冷蔵庫')h+=`<div class="fifo"><div class="cap">【冷蔵庫の置き方（先入れ先出し）】</div>
       <div class="g"><div class="c" style="background:#F8CBAD">① いちばん古い（最初に使う）</div><div class="c" style="background:#FCE4D6">② 次に古い</div>
       <div class="c" style="background:#FDF0E7">③</div><div class="c" style="background:#fff;border:2px solid #C55A11">④ いちばん新しい（最後に使う）</div></div>
@@ -318,12 +379,12 @@ function renderCat(name){
     else if(t==='カード'){
       const hs=r.label.split('|'),ds=r.text.split('|');
       h+=`<div class="quad">${hs.map((x,i)=>`<div class="q"><div class="qh">${esc(x)}</div><div class="qb">${esc(ds[i]||'')}</div></div>`).join('')}</div>`;}
-    else if(t==='写真'&&r.photo)h+=`<div class="ph" onclick="lightbox('./img/${esc(r.photo)}','${esc(r.label)}')"><img loading="lazy" src="./img/${esc(r.photo)}"><div class="cap">📷 ${esc(r.label)}</div></div>`;
+    else if(t==='写真'&&r.photo)h+=`<div class="ph" onclick="lightbox('./img/${esc(r.photo)}','${esc(r.label)}')"><img loading="lazy" src="./img/${esc(r.photo)}"><div class="cap">${ic('camera')}${esc(r.label)}</div></div>`;
     if(r.src&&r.src.includes('アプリ追記')){h+=`<div style="font-size:11px;color:#9a8f7e;margin:-4px 4px 8px;text-align:right">（${esc(r.src)}）</div>`;}
   }
   h+=`<div class="note memo" style="margin-top:18px">※ 旬どら（期間限定商品）の作り方・最新の変更は、必ずLINEグループのノートで確認してください。</div>
     <div style="height:70px"></div>
-    <button class="addbtn" onclick="openAdd('${esc(name)}')">✏️ 加筆する</button></div>`;
+    <button class="addbtn" onclick="openAdd('${esc(name)}')">${ic('pencil')} 加筆する</button></div>`;
   $('#app').innerHTML=h;
 }
 function lightbox(src,cap){$('#lbimg').src=src;$('#lbcap').textContent=cap;$('#lightbox').style.display='flex';}
@@ -332,7 +393,7 @@ function lightbox(src,cap){$('#lbimg').src=src;$('#lbcap').textContent=cap;$('#l
 function openAdd(cat){
   const c=catByName(cat);
   const secs=(M.content[cat]||[]).filter(r=>r.type==='見出し').map(r=>r.text);
-  $('#sheetbody').innerHTML=`<h3>✏️ ${esc(cat)} に加筆する</h3>
+  $('#sheetbody').innerHTML=`<h3>${ic('pencil')}${esc(cat)} に加筆する</h3>
     <label>どの見出しのあたり？（メモとして残ります・任意）</label>
     <select id="f_sec"><option value="">（指定しない）</option>${secs.map(s=>`<option>${esc(s)}</option>`).join('')}</select>
     <div class="srow"><div><label>種類</label>
@@ -366,7 +427,7 @@ async function submitAdd(cat){
   }catch(e){showErr('通信エラー。電波の良いところでもう一度');}
 }
 function openAnnounce(){
-  $('#sheetbody').innerHTML=`<h3>📣 お知らせを投稿する</h3>
+  $('#sheetbody').innerHTML=`<h3>${ic('megaphone')}お知らせを投稿する</h3>
     <label>タイトル ＊必須</label><input id="a_title" placeholder="例: 7/20から営業時間が変わります">
     <label>くわしく（任意）</label><textarea id="a_note"></textarea>
     <label>関係する現場（任意）</label>
@@ -394,7 +455,7 @@ async function submitAnnounce(){
 function showErr(m){const e=$('#f_err');e.textContent=m;e.style.display='block';}
 function closeModal(){$('#modal').classList.remove('on');}
 $('#modal').addEventListener('click',e=>{if(e.target.id==='modal')closeModal();});
-function toast(m){const t=$('#toast');t.textContent='✅ '+m;t.style.display='block';setTimeout(()=>t.style.display='none',2600);}
+function toast(m){const t=$('#toast');t.innerHTML=ic('check')+esc(m);t.style.display='block';setTimeout(()=>t.style.display='none',2600);}
 boot();
 </script>
 </body>
