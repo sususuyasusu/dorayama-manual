@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1d5b37">
+<meta name="robots" content="noindex">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="icon" href="../img/icon-192.png">
+<link rel="manifest" href="./manifest.json">
+<title>どら山 催事報告</title>
+<style>
+:root{--appw:560px;--bg:#1d5b37;--card:#f4f3ec;--ink:#2a2420;--sub:#7d746b;--line:#e3ddd1;
+  --cream:#f4f8ee;--onbg:#bcd3a8;--coral:#d8552c;--green:#3f8a1e;--amber:#c97c00;--blue:#2f6fc0;--red:#c9342b;
+  --coral-bg:#fcebe3;--green-bg:#eaf4dc;--amber-bg:#fdf0d8;--blue-bg:#e6effb;--gray-bg:#efebe3;
+  --shadow:0 1px 2px rgba(60,40,20,.06),0 2px 10px rgba(60,40,20,.05)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP","Yu Gothic",sans-serif;
+  background:var(--bg);color:var(--ink);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;
+  padding-bottom:calc(90px + env(safe-area-inset-bottom))}
+.wrap{max-width:var(--appw);margin:0 auto;padding:0 12px}
+header.top{position:sticky;top:0;z-index:20;background:var(--bg);padding:calc(10px + env(safe-area-inset-top)) 0 10px}
+header .row{max-width:var(--appw);margin:0 auto;padding:0 14px;display:flex;align-items:center;gap:10px}
+header img{height:26px}
+header .t{color:var(--cream);font-weight:800;font-size:18px;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+header button{border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.12);color:var(--cream);border-radius:999px;padding:6px 13px;font-size:13px;font-weight:800}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:14px 15px;margin:10px 0}
+.hello{color:var(--cream);margin:6px 2px 4px}
+.hello .d{font-size:13px;color:var(--onbg);font-weight:700}
+.hello .v{font-size:21px;font-weight:800;line-height:1.35}
+.hello .s{font-size:13px;color:var(--onbg)}
+.cheer{background:linear-gradient(135deg,#f7d774,#f2b43c);color:#3b2a06;border-radius:14px;padding:12px 15px;margin:10px 0;font-weight:800;font-size:14.5px;box-shadow:var(--shadow)}
+.cheer small{display:block;font-weight:700;font-size:12px;opacity:.8}
+.steps{display:grid;gap:9px;margin-top:8px}
+.step{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-left:6px solid var(--ac,#8b5e3c);
+  border-radius:14px;box-shadow:var(--shadow);padding:12px 14px;text-align:left;width:100%;color:var(--ink);font:inherit}
+.step:active{transform:scale(.985)}
+.step .ic{flex:none;width:42px;height:42px;border-radius:12px;background:var(--lt,#f3e5d8);display:grid;place-items:center;color:var(--ac)}
+.step .ic svg{width:24px;height:24px}
+.step .tx{flex:1;min-width:0}
+.step .n{font-weight:800;font-size:16px;line-height:1.3}
+.step .h{font-size:12.5px;color:var(--sub);font-weight:700}
+.st{flex:none;font-size:11.5px;font-weight:800;border-radius:999px;padding:3px 9px;background:var(--gray-bg);color:var(--sub)}
+.st.ok{background:var(--green-bg);color:var(--green)}
+.st.wait{background:var(--amber-bg);color:var(--amber)}
+h2.sec{font-size:13px;font-weight:800;color:var(--onbg);margin:20px 2px 6px;letter-spacing:.04em;display:flex;gap:8px;align-items:center}
+h2.sec:after{content:"";flex:1;height:1px;background:rgba(255,255,255,.2)}
+.view{display:none}.view.on{display:block}
+.vhead{display:flex;align-items:center;gap:10px;margin:8px 0 2px}
+.back{border:0;background:rgba(255,255,255,.14);color:var(--cream);border-radius:999px;padding:7px 14px;font-weight:800;font-size:14px}
+.vtitle{color:var(--cream);font-size:19px;font-weight:800}
+.lead{color:var(--onbg);font-size:13px;margin:4px 2px 0}
+label.f{display:block;font-weight:800;font-size:14px;margin:12px 0 5px}
+label.f .req{color:var(--coral);font-size:11.5px;margin-left:6px}
+label.f .hint{display:block;font-weight:600;font-size:12px;color:var(--sub)}
+input[type=text],input[type=number],input[type=tel],input[type=date],select,textarea{width:100%;border:1.5px solid #d8d0c2;background:#fff;border-radius:11px;
+  padding:11px 12px;font-size:17px;color:var(--ink);font-family:inherit;outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--green)}
+textarea{min-height:84px;font-size:15.5px;line-height:1.55}
+.big input{font-size:24px;font-weight:800;text-align:right;padding:10px 14px}
+.yen{position:relative}.yen:after{content:"円";position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--sub);font-weight:800}
+.yen input{padding-right:36px}
+.ppl:after{content:"人"}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.chk{display:flex;gap:11px;align-items:flex-start;padding:10px 2px;border-top:1px solid var(--line)}
+.chk:first-of-type{border-top:0}
+.chk input{width:24px;height:24px;flex:none;margin-top:1px;accent-color:var(--green)}
+.chk b{display:block;font-size:14.5px}
+.chk span{font-size:12.5px;color:var(--sub)}
+.pt{width:100%;border-collapse:collapse;font-size:13.5px}
+.pt th{font-size:11.5px;color:var(--sub);font-weight:800;padding:4px 2px;text-align:center;line-height:1.25}
+.pt td{padding:4px 2px;border-top:1px solid var(--line);text-align:center}
+.pt td.nm{text-align:left;font-weight:800;font-size:13.5px;line-height:1.25;padding-right:4px}
+.pt td.nm small{display:block;font-weight:700;color:var(--sub);font-size:11px}
+.pt input{font-size:17px;padding:8px 4px;text-align:center;border-radius:9px;min-width:0}
+.pt .sold{font-weight:800;font-size:17px}
+.pt .sold.bad{color:var(--red)}
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip{border:1.5px solid #d8d0c2;background:#fff;border-radius:999px;padding:7px 13px;font-size:14px;font-weight:700;color:var(--ink)}
+.chip.on{background:var(--green);border-color:var(--green);color:#fff}
+.note{border-radius:11px;padding:10px 12px;font-size:13.5px;margin:10px 0;line-height:1.55}
+.note.warn{background:var(--amber-bg);color:#7a4b00}
+.note.bad{background:var(--coral-bg);color:#8a2a12}
+.note.ok{background:var(--green-bg);color:#2c5e12}
+.note.info{background:var(--blue-bg);color:#1d4c86}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;border:0;border-radius:13px;padding:14px;font-size:16.5px;font-weight:800;margin-top:10px;font-family:inherit}
+.btn svg{width:20px;height:20px}
+.btn.main{background:var(--coral);color:#fff}
+.btn.line{background:#06c755;color:#fff}
+.btn.sub{background:var(--gray-bg);color:var(--ink)}
+.btn:disabled{opacity:.5}
+.btn:active{transform:scale(.985)}
+.sum{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:6px}
+.sum div{background:#fff;border:1px solid var(--line);border-radius:11px;padding:8px 6px;text-align:center}
+.sum b{display:block;font-size:17px}
+.sum span{font-size:11px;color:var(--sub);font-weight:800}
+.bar{height:12px;border-radius:999px;background:var(--gray-bg);overflow:hidden;margin-top:6px}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,#f2b43c,#d8552c);border-radius:999px}
+.qbar{position:fixed;left:0;right:0;bottom:0;z-index:25;background:rgba(29,91,55,.97);border-top:1px solid rgba(255,255,255,.18);
+  padding:9px 14px calc(9px + env(safe-area-inset-bottom))}
+.qbar .in{max-width:var(--appw);margin:0 auto;display:flex;gap:8px}
+.qbar a,.qbar button{flex:1;text-align:center;text-decoration:none;color:var(--cream);font-weight:800;font-size:12.5px;border:0;background:transparent;
+  display:flex;flex-direction:column;align-items:center;gap:2px;font-family:inherit}
+.qbar svg{width:22px;height:22px}
+.qbar .dot{background:var(--coral);color:#fff;border-radius:999px;font-size:10.5px;padding:0 6px}
+#toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:#2a2420;color:#fff;padding:10px 16px;border-radius:12px;font-weight:700;font-size:14px;
+  opacity:0;pointer-events:none;transition:opacity .2s;z-index:50;max-width:90vw;text-align:center}
+#toast.on{opacity:1}
+.hist{font-size:13px}
+.hist div{padding:8px 0;border-top:1px solid var(--line)}
+.hist div:first-child{border-top:0}
+.small{font-size:12px;color:var(--sub)}
+.hq-v{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.hq-v b{font-size:16px}
+.tag{display:inline-block;font-size:11px;font-weight:800;border-radius:6px;padding:1px 7px;margin-right:4px;background:var(--gray-bg);color:var(--sub)}
+.tag.d{background:var(--green-bg);color:var(--green)}.tag.p{background:var(--blue-bg);color:var(--blue)}.tag.t{background:var(--coral-bg);color:var(--coral)}
+pre.lt{white-space:pre-wrap;background:#fff;border:1px dashed #cfc6b6;border-radius:11px;padding:10px 12px;font-size:13px;font-family:inherit;margin:8px 0 0;max-height:280px;overflow:auto}
+a{color:var(--blue)}
+</style>
+</head>
+<body>
+<header class="top"><div class="row">
+  <img src="../img/header-logo.png" alt="">
+  <div class="t" id="htitle">催事報告</div>
+  <button id="hbtn" onclick="go('setup')">設定</button>
+</div></header>
+
+<div class="wrap">
+
+<!-- ===== ホーム ===== -->
+<section class="view on" id="v-home">
+  <div class="hello">
+    <div class="d" id="h-date"></div>
+    <div class="v" id="h-venue">会場を設定してください</div>
+    <div class="s" id="h-staff"></div>
+  </div>
+  <div class="cheer" id="cheer"></div>
+  <h2 class="sec">今日やること（上から順に）</h2>
+  <div class="steps" id="steps"></div>
+  <h2 class="sec">送った記録</h2>
+  <div class="card hist" id="hist"><span class="small">まだありません</span></div>
+  <p class="lead" style="text-align:center;margin:18px 0">わからない時は <a href="./" style="color:var(--cream)">催事販売マニュアル</a> を開くか、本部のLINEに連絡してください。</p>
+</section>
+
+<!-- ===== 設定 ===== -->
+<section class="view" id="v-setup">
+  <div class="vhead"><button class="back" onclick="go('home')">戻る</button><div class="vtitle">最初の設定</div></div>
+  <p class="lead">一度入れればこのスマホに残ります。会場が変わった時だけ直してください。</p>
+  <div class="card">
+    <label class="f">あなたのお名前<span class="req">必須</span><span class="hint">フルネームで（例：山田 花子）</span></label>
+    <input type="text" id="s-staff" autocomplete="name" placeholder="山田 花子">
+    <label class="f">所属<span class="hint">どら山の社員・アルバイトは「どら山」、派遣の方は派遣会社名</span></label>
+    <input type="text" id="s-agency" placeholder="どら山 / 〇〇派遣">
+    <label class="f">会場<span class="req">必須</span><span class="hint">一覧から選ぶ（名前の書き方がバラバラになると売上が二重に数えられるため）</span></label>
+    <select id="s-venue"></select>
+    <div id="s-venue-other-box" style="display:none">
+      <label class="f">会場名（一覧に無い場合）<span class="hint">「百貨店名＋店名」の順で。例：松坂屋上野</span></label>
+      <input type="text" id="s-venue-other" placeholder="松坂屋上野">
+    </div>
+    <div class="two">
+      <div><label class="f">会期 はじめ</label><input type="date" id="s-from"></div>
+      <div><label class="f">会期 おわり</label><input type="date" id="s-to"></div>
+    </div>
+    <div class="two">
+      <div><label class="f">今月の旬どら<span class="hint">ラベルの名前</span></label>
+      <input type="text" id="s-shun" placeholder="無花果乃紅茶どら"></div>
+      <div><label class="f">旬どらの値段<span class="hint">税込・値札どおり</span></label>
+      <div class="yen"><input type="number" inputmode="numeric" id="s-shunp" placeholder="450"></div></div>
+    </div>
+    <label class="f">1日の売上目標（わかれば）<span class="hint">本部から聞いた金額。途中報告で達成率が出ます</span></label>
+    <div class="yen"><input type="number" inputmode="numeric" id="s-target" placeholder="150000"></div>
+    <button class="btn main" onclick="saveSetup()">保存する</button>
+  </div>
+</section>
+
+<!-- ===== 開店前チェック ===== -->
+<section class="view" id="v-open">
+  <div class="vhead"><button class="back" onclick="go('home')">戻る</button><div class="vtitle">開店前チェック</div></div>
+  <p class="lead">全部にチェックが付いたら「開店準備OK」を送ります。できない項目があれば、そのまま本部に連絡。</p>
+  <div class="card" id="open-list"></div>
+  <label class="f" style="color:var(--cream)">ひとこと（任意）</label>
+  <textarea id="open-memo" placeholder="例：隣が人気店で朝から行列。試食の許可も出ました"></textarea>
+  <button class="btn main" onclick="sendOpen()">開店準備OKを送る</button>
+  <button class="btn line" onclick="lineOf('open')">LINEで送る（売場写真もLINEに）</button>
+</section>
+
+<!-- ===== 入荷・検品 ===== -->
+<section class="view" id="v-delivery">
+  <div class="vhead"><button class="back" onclick="go('home')">戻る</button><div class="vtitle">入荷・検品</div></div>
+  <p class="lead">届いた箱を開けて、商品ごとに数えます。納品書と違う時は、箱と納品書の写真をLINEへ。</p>
+  <div class="card">
+    <table class="pt"><thead><tr><th style="text-align:left">商品</th><th>昨日の<br>残り</th><th>今日<br>届いた数</th></tr></thead><tbody id="dl-body"></tbody></table>
+    <label class="f">気づいたこと（任意）</label>
+    <textarea id="dl-memo" placeholder="例：生どらが2個つぶれていた／旬どらが納品書より6個少ない"></textarea>
+  </div>
+  <button class="btn main" onclick="sendDelivery()">検品OKを送る</button>
+  <button class="btn line" onclick="lineOf('delivery')">LINEで送る</button>
+</section>
+
+<!-- ===== 途中報告 ===== -->
+<section class="view" id="v-progress">
+  <div class="vhead"><button class="back" onclick="go('home')">戻る</button><div class="vtitle">途中報告（昼・15時）</div></div>
+  <p class="lead">レジの「点検（途中集計）」の数字を入れます。売れ行きを本部が見て、追加の製造を決めます。</p>
+  <div class="card">
+    <label class="f">今の時点の売上（税込）<span class="req">必須</span></label>
+    <div class="big yen"><input type="number" inputmode="numeric" id="pg-sales" placeholder="0"></div>
+    <div id="pg-target"></div>
+    <label class="f">今の時点の客数<span class="hint">わからなければ空でOK</span></label>
+    <div class="big yen ppl"><input type="number" inputmode="numeric" id="pg-cust" placeholder="0"></div>
+    <label class="f">売場の残り（ざっくりでOK）</label>
+    <table class="pt"><tbody id="pg-body"></tbody></table>
+    <label class="f">人の流れ</label>
+    <div class="chips" id="pg-crowd"></div>
+    <label class="f">ひとこと</label>
+    <textarea id="pg-memo" placeholder="例：14時から旬どらが急に動いています。夕方まで持たないかも"></textarea>
+  </div>
+  <button class="btn main" onclick="sendProgress()">途中報告を送る</button>
+  <button class="btn line" onclick="lineOf('progress')">LINEで送る</button>
+</section>
+
+<!-- ===== 閉店日報 ===== -->
+<section class="view" id="v-daily">
+  <div class="vhead"><button class="back" onclick="go('home')">戻る</button><div class="vtitle">閉店日報</div></div>
+  <p class="lead">レジ締めのレシート（精算）を見ながら入れます。毎日、帰る前に必ず送ってください。</p>
+  <div class="card">
+    <label class="f">日付</label>
+    <input type="date" id="dy-date">
+    <label class="f">今日の売上（税込）<span class="req">必須</span><span class="hint">レジ締めレシートの「総売上（税込）」</span></label>
+    <div class="big yen"><input type="number" inputmode="numeric" id="dy-incl" placeholder="0"></div>
+    <label class="f">税抜の売上<span class="hint">自動で出ます。レシートに税抜があればその数字に直してOK</span></label>
+    <div class="yen"><input type="number" inputmode="numeric" id="dy-excl" placeholder="0"></div>
+    <label class="f">客数<span class="req">必須</span><span class="hint">レジの「客数」。わからない時は下のボタン</span></label>
+    <div class="big yen ppl"><input type="number" inputmode="numeric" id="dy-cust" placeholder="0"></div>
+    <label class="chk" style="border:0;padding:6px 0 0"><input type="checkbox" id="dy-cust-unk"><div><b>客数がわからない</b><span>会場レジで客数が出ない時だけ</span></div></label>
+    <div class="sum" id="dy-sum"></div>
+  </div>
+
+  <div class="card">
+    <b>商品ごとの数</b>
+    <p class="small" style="margin:2px 0 6px">「夜の残り」と「ロス」を入れると、売れた数が自動で出ます。売れた数を直接入れてもOK。</p>
+    <table class="pt">
+      <thead><tr><th style="text-align:left">商品</th><th>昨日の<br>残り</th><th>今日<br>届いた</th><th>ロス<br>(破損等)</th><th>夜の<br>残り</th><th>売れた<br>数</th></tr></thead>
+      <tbody id="dy-body"></tbody>
+    </table>
+    <div id="dy-check"></div>
+  </div>
+
+  <div class="card">
+    <b>今日のふりかえり</b>
+    <p class="small" style="margin:2px 0 4px">本部はここを一番楽しみに読んでいます。短くてOK、事実をそのまま。</p>
+    <label class="f">人の流れ</label>
+    <div class="chips" id="dy-crowd"></div>
+    <label class="f">よく売れた時間帯・商品</label>
+    <textarea id="dy-good" placeholder="例：15〜17時に旬どら。ご年配の方が手土産に5個入りを"></textarea>
+    <label class="f">お客様の声（そのまま書く）</label>
+    <textarea id="dy-voice" placeholder="例：「去年もここで買った」「皮だけって何？」と3人に聞かれた"></textarea>
+    <label class="f">困ったこと・会場から言われたこと</label>
+    <textarea id="dy-trouble" placeholder="例：夕方に旬どらが売り切れ、20人ほどお断り"></textarea>
+    <label class="f">明日やってみたいこと</label>
+    <textarea id="dy-next" placeholder="例：試食をあんバター中心に。POPを通路側へ"></textarea>
+  </div>
+
+  <div class="card">
+    <b>明日の納品のお願い</b>
+    <p class="small" style="margin:2px 0 6px">足りなくなりそうな商品だけ「ほしい数」を。最終判断は本部です。</p>
+    <table class="pt"><tbody id="dy-req"></tbody></table>
+    <label class="f">足りない備品</label>
+    <div class="chips" id="dy-supply"></div>
+  </div>
+
+  <div id="dy-err"></div>
+  <button class="btn main" id="dy-send" onclick="sendDaily()">日報を送る</button>
+  <button class="btn line" onclick="lineOf('daily')">LINEにも送る</button>
+  <p class="lead" style="margin-top:10px">送った後に数字の間違いに気づいたら、直してもう一度「日報を送る」を押せばOKです（最後に送ったものが正しい数字になります）。</p>
+</section>
+
+<!-- ===== 困りごと ===== -->
+<section class="view" id="v-trouble">
+  <div class="vhead"><button class="back" onclick="go('home')">戻る</button><div class="vtitle">困った・すぐ連絡</div></div>
+  <div class="note bad"><b>お客様のケガ・体調不良・異物・火事・盗難</b>は、このアプリではなく<b>まず電話</b>（会場の担当者 → どら山本部）。</div>
+  <div class="card">
+    <label class="f">何が起きた？</label>
+    <div class="chips" id="tr-kind"></div>
+    <label class="f">どの商品？（あれば）</label>
+    <div class="chips" id="tr-prod"></div>
+    <label class="f">くわしく<span class="req">必須</span></label>
+    <textarea id="tr-memo" placeholder="例：黒どらが残り5個。17時には無くなりそう"></textarea>
+    <label class="chk" style="border:0"><input type="checkbox" id="tr-urgent"><div><b>至急（30分以内に返事がほしい）</b><span>LINEの最初に【至急】が付きます</span></div></label>
+  </div>
+  <button class="btn line" onclick="sendTrouble()">LINEで本部に送る</button>
+  <p class="lead">写真があるとすぐ伝わります。LINEを開いたら写真も一緒に送ってください。</p>
+</section>
+
+<!-- ===== LINE文面 ===== -->
+<section class="view" id="v-line">
+  <div class="vhead"><button class="back" onclick="go('home')">戻る</button><div class="vtitle">LINEに送る文</div></div>
+  <div class="card">
+    <p class="small" style="margin:0">下の文がそのまま本部のLINEに送れます。「LINEを開く」→ 送り先に<b>どら山 催事グループ</b>を選んで送信。</p>
+    <pre class="lt" id="lt"></pre>
+    <button class="btn line" onclick="openLine()">LINEを開く</button>
+    <button class="btn sub" onclick="copyLine()">文をコピーする</button>
+  </div>
+</section>
+
+<!-- ===== 本部用 ===== -->
+<section class="view" id="v-hq">
+  <div class="vhead"><button class="back" onclick="go('home')">戻る</button><div class="vtitle">本部：今日の全会場</div></div>
+  <div class="card">
+    <div class="two">
+      <div><label class="f">日付</label><input type="date" id="hq-date"></div>
+      <div><label class="f">合言葉</label><input type="text" id="hq-code" autocomplete="off"></div>
+    </div>
+    <button class="btn main" onclick="loadHQ()">見る</button>
+  </div>
+  <div id="hq-out"></div>
+</section>
+
+</div>
+
+<nav class="qbar"><div class="in">
+  <button onclick="go('home')"><span data-ic="home"></span>今日</button>
+  <button onclick="go('trouble')"><span data-ic="alert"></span>困った</button>
+  <a href="./"><span data-ic="book"></span>マニュアル</a>
+  <button onclick="flushQueue(true)" id="qbtn"><span data-ic="send"></span><span id="qlabel">送信待ち 0</span></button>
+</div></nav>
+<div id="toast"></div>
+
+<script>
+'use strict';
+// ===== 設定 =====
+// 送信先（スタッフマニュアルと同じGoogle Apps Script。催事の受け口は gas/Code.gs 末尾）
+const API='https://script.google.com/macros/s/AKfycbye-3UwADfDDbkH68LuVxv1wA-TI1eMo9BTEUa5H7RFJ8KqMbpsvtHUhZeh8mon1Hqq/exec';
+// 商品（Googleフォーム「どら山 売上日報提出」の6商品と同じ並び・百貨店価格の税込）
+const PRODUCTS=[
+  {k:'kuro',n:'黒どら',p:299},{k:'shiro',n:'白どら',p:299},{k:'anbutter',n:'あんバターどら',p:399},
+  {k:'shun',n:'旬どら',p:450},{k:'kawa',n:'皮だけ',p:430},{k:'nama',n:'生どら',p:480,cold:true}];
+// 会場名は「百貨店名＋店名」で統一（表記ゆれで同じ会場が二重に数えられる事故の再発防止）
+const VENUES=['エキュート上野','エキュート秋葉原','エキュート大宮','松坂屋上野','東武池袋','西武池袋','伊勢丹新宿',
+  '三越日本橋','三越仙台','高島屋新宿','高島屋日本橋','高島屋名古屋','高島屋京都','京王新宿','小田急新宿',
+  '大丸東京','大丸梅田','阪神梅田','博多阪急','鶴屋百貨店','そごう横浜','長野東急','あべのハルカス近鉄',
+  'ルミネ新宿','ルミネ大宮','ルミネ立川','アトレ吉祥寺','ニュウマン新宿','ラゾーナ川崎','川越エキア'];
+const CHECKS=[
+  ['入館・名札','従業員入口で入館手続き。名札（どら山／派遣会社）と入館証を見える位置に'],
+  ['身だしなみ','清潔な服・エプロン・帽子（三角巾）。髪はまとめる。爪は短く、アクセサリーと強い香水は外す'],
+  ['手洗い・消毒','石けんで30秒＋アルコール。体調が悪い時は売場に出ずに本部へ連絡'],
+  ['検品','届いた箱を数える（入荷・検品の画面へ）。生どらはすぐ冷蔵ケースへ'],
+  ['陳列','全商品を前に出す。正面をそろえ、少ない棚は寄せて「たくさんある」見せ方に'],
+  ['値札・POP・アレルゲン','全商品に値札。アレルゲン表と期限表示が見える所にある'],
+  ['レジ・釣銭','レジが立ち上がる。釣銭の金額を数えて記録。袋・シール・保冷剤がある'],
+  ['試食','会場の許可がある時だけ。トングと小皿、ふた付き容器で'],
+  ['売場写真','開店前の売場を正面から1枚（LINEで本部へ）'],
+  ['今日の目標','今日の売上目標とおすすめ商品を確認。声出しの第一声を決める']];
+const CROWD=['とても多い','多い','ふつう','少ない','とても少ない'];
+const WEATHER=['晴れ','くもり','雨','雪・台風'];
+const SUPPLIES=['手提げ袋','透明袋','シール','保冷剤','値札・POP','レジロール','釣銭','名札','その他'];
+const TROUBLE=['欠品しそう','数が合わない','商品の破損','レジ・釣銭','会場からの指示','お客様のご意見','遅刻・体調','その他'];
+
+// ===== アイコン（線のSVG） =====
+const IC={
+ home:'<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/>',
+ alert:'<path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17v.5"/>',
+ book:'<path d="M4 5a2 2 0 012-2h13v16H6a2 2 0 00-2 2z"/><path d="M4 19V5"/>',
+ send:'<path d="M3 11l18-8-8 18-2-8z"/>',
+ sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M5 19l1.5-1.5M17.5 6.5L19 5"/>',
+ box:'<path d="M3 7l9-4 9 4v10l-9 4-9-4z"/><path d="M3 7l9 4 9-4M12 11v10"/>',
+ chart:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+ moon:'<path d="M20 14A8 8 0 1110 4a6 6 0 0010 10z"/>',
+ chat:'<path d="M4 5h16v11H9l-5 4z"/>',
+ check:'<path d="M5 12l4 4 10-10"/>',
+ line:'<path d="M12 4C6.5 4 3 7.3 3 11c0 3.3 2.8 6 6.7 6.6L9 21l4.4-3.4C18 17.2 21 14.3 21 11c0-3.7-3.5-7-9-7z"/>'
+};
+function svg(name){return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${IC[name]||''}</svg>`}
+document.querySelectorAll('[data-ic]').forEach(e=>e.innerHTML=svg(e.dataset.ic));
+document.querySelectorAll('.btn.line').forEach(b=>b.innerHTML=svg('line')+b.innerHTML);
+
+// ===== 保存（このスマホの中） =====
+const KEY='dorayama_saiji_v1';
+let S;
+function load(){try{S=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){S={}}
+  S.profile=S.profile||{};S.days=S.days||{};S.queue=S.queue||[];S.log=S.log||[]}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+load();
+function applyShunPrice(){const p=PRODUCTS.find(x=>x.k==='shun');p.p=S.profile.shunPrice||450}
+
+// URLで会場などを受け取る（本部がLINEで配るリンク: report.html?v=松坂屋上野&a=〇〇派遣&t=150000）
+(function(){const q=new URLSearchParams(location.search);
+  if(q.get('v'))S.profile.venue=q.get('v');
+  if(q.get('a'))S.profile.agency=q.get('a');
+  if(q.get('t'))S.profile.target=Number(q.get('t'))||0;
+  if(q.get('from'))S.profile.from=q.get('from');
+  if(q.get('to'))S.profile.to=q.get('to');
+  if(q.get('shun'))S.profile.shun=q.get('shun');
+  if(q.get('sp'))S.profile.shunPrice=Number(q.get('sp'))||0;
+  applyShunPrice();save()})();
+
+// ===== 日付 =====
+function ymd(d){d=d||new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function jdate(s){const [y,m,d]=s.split('-').map(Number);const w='日月火水木金土'[new Date(y,m-1,d).getDay()];return `${m}/${d}(${w})`}
+function prevDay(s){const [y,m,d]=s.split('-').map(Number);return ymd(new Date(y,m-1,d-1))}
+// 0時〜4時に開いたら前日扱い（閉店後に日付をまたいで日報を書く人のため）
+function workDay(){const n=new Date();if(n.getHours()<4){n.setDate(n.getDate()-1)}return ymd(n)}
+let TODAY=workDay();
+function day(s){s=s||TODAY;S.days[s]=S.days[s]||{};return S.days[s]}
+const yen=n=>(Number(n)||0).toLocaleString('ja-JP')+'円';
+const num=v=>{const s=String(v??'').replace(/[０-９]/g,c=>String.fromCharCode(c.charCodeAt(0)-0xFEE0)).replace(/[^\d-]/g,'');return s===''||s==='-'?null:Number(s)};
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function pname(p){return p.k==='shun'&&S.profile.shun?`旬どら（${S.profile.shun}）`:p.n}
+function toast(t){const e=document.getElementById('toast');e.textContent=t;e.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('on'),2600)}
+
+// ===== 画面切替 =====
+function go(v){
+  if(v!=='setup'&&v!=='hq'&&(!S.profile.staff||!S.profile.venue)){v='setup'}
+  document.querySelectorAll('.view').forEach(e=>e.classList.toggle('on',e.id==='v-'+v));
+  ({home:renderHome,setup:renderSetup,open:renderOpen,delivery:renderDelivery,progress:renderProgress,daily:renderDaily,trouble:renderTrouble,hq:renderHQ}[v]||(()=>{}))();
+  scrollTo(0,0);
+  if(v!=='line')history.replaceState(null,'',location.pathname+location.search+(v==='home'?'':'#'+v));
+}
+
+// ===== ホーム =====
+const STEPS=[
+  {v:'open',n:'開店前チェック',h:'入館・身だしなみ・陳列・レジ',ic:'sun',ac:'#dd8a00',lt:'#fdf0d8'},
+  {v:'delivery',n:'入荷・検品',h:'届いた数を数えて報告',ic:'box',ac:'#8b5e3c',lt:'#f3e5d8'},
+  {v:'progress',n:'途中報告（昼・15時）',h:'売上と残りを本部へ',ic:'chart',ac:'#2f6fc0',lt:'#e6effb'},
+  {v:'daily',n:'閉店日報',h:'売上・客数・売れた数・ふりかえり',ic:'moon',ac:'#d8552c',lt:'#fcebe3'},
+  {v:'trouble',n:'困った・すぐ連絡',h:'欠品・数違い・会場から指示',ic:'chat',ac:'#c9342b',lt:'#fbe4e2'}];
+function renderHome(){
+  const P=S.profile,D=day();
+  document.getElementById('htitle').textContent='どら山 催事報告';
+  document.getElementById('h-date').textContent=jdate(TODAY)+(P.from&&P.to?` ／ 会期 ${jdate(P.from)}〜${jdate(P.to)}`:'');
+  document.getElementById('h-venue').textContent=P.venue||'会場を設定してください';
+  document.getElementById('h-staff').textContent=P.staff?`${P.staff}${P.agency?'（'+P.agency+'）':''}`:'';
+  document.getElementById('cheer').innerHTML=cheer();
+  const st=s=>{
+    if(s==='open')return D.open&&D.open.sentAt?['ok','送信済']:['','未'];
+    if(s==='delivery')return D.delivery&&D.delivery.sentAt?['ok','送信済']:['','未'];
+    if(s==='progress'){const n=(D.progress||[]).length;return n?['ok',n+'回送信']:['','未']}
+    if(s==='daily')return D.daily&&D.daily.sentAt?['ok','送信済']:(new Date().getHours()>=17?['wait','今夜']:['','閉店後']);
+    return ['',''];};
+  document.getElementById('steps').innerHTML=STEPS.map(s=>{const [c,t]=st(s.v);
+    return `<button class="step" style="--ac:${s.ac};--lt:${s.lt}" onclick="go('${s.v}')"><span class="ic">${svg(s.ic)}</span>
+    <span class="tx"><span class="n">${s.n}</span><br><span class="h">${s.h}</span></span>${t?`<span class="st ${c}">${t}</span>`:''}</button>`}).join('');
+  const L=S.log.slice(-8).reverse();
+  document.getElementById('hist').innerHTML=L.length?L.map(x=>`<div><b>${esc(x.title)}</b> <span class="small">${esc(x.at)}</span><br><span class="small">${esc(x.state)}</span></div>`).join(''):'<span class="small">まだありません</span>';
+  updQ();
+}
+// 元気が出るひとこと（前日比・会期の何日目か）
+function cheer(){
+  const P=S.profile;let head='今日も「どら山に来てよかった」を一人でも多く。',sub='最初の一声は、明るく大きく「いらっしゃいませ、門前仲町のどら焼き専門店・どら山です！」';
+  if(P.from&&P.to){const a=new Date(P.from),b=new Date(P.to),t=new Date(TODAY);const n=Math.round((t-a)/864e5)+1,all=Math.round((b-a)/864e5)+1;
+    if(n>=1&&n<=all){head=n===1?'初日です。最初の1時間で売場の流れをつかみましょう':n===all?'最終日です。最後まで笑顔で、売り切りを目指しましょう':`会期 ${n}日目／${all}日。ここからが勝負です`}}
+  const y=day(prevDay(TODAY)).daily;
+  if(y&&y.salesIncl){sub=`昨日は ${yen(y.salesIncl)}・${y.customers||'-'}人でした。今日は昨日を1円でも超えましょう`}
+  return head+`<small>${sub}</small>`;
+}
+
+// ===== 設定 =====
+function renderSetup(){
+  const P=S.profile;document.getElementById('htitle').textContent='最初の設定';
+  const sel=document.getElementById('s-venue');
+  const inList=VENUES.includes(P.venue);
+  sel.innerHTML='<option value="">選んでください</option>'+VENUES.map(v=>`<option${v===P.venue?' selected':''}>${v}</option>`).join('')+`<option value="__other"${P.venue&&!inList?' selected':''}>一覧に無い会場</option>`;
+  const box=document.getElementById('s-venue-other-box');
+  box.style.display=P.venue&&!inList?'block':'none';
+  document.getElementById('s-venue-other').value=P.venue&&!inList?P.venue:'';
+  sel.onchange=()=>{box.style.display=sel.value==='__other'?'block':'none'};
+  document.getElementById('s-staff').value=P.staff||'';
+  document.getElementById('s-agency').value=P.agency||'';
+  document.getElementById('s-from').value=P.from||'';
+  document.getElementById('s-to').value=P.to||'';
+  document.getElementById('s-shun').value=P.shun||'';
+  document.getElementById('s-shunp').value=P.shunPrice||'';
+  document.getElementById('s-target').value=P.target||'';
+}
+function normVenue(v){return String(v||'').replace(/[\s　]+/g,'').replace(/松阪屋/g,'松坂屋').replace(/(百貨店|本店|店)$/,'')}
+function saveSetup(){
+  const g=id=>document.getElementById(id).value.trim();
+  let v=g('s-venue');if(v==='__other')v=normVenue(g('s-venue-other'));
+  const staff=g('s-staff');
+  if(!staff){toast('お名前を入れてください');return}
+  if(!v){toast('会場を選んでください');return}
+  Object.assign(S.profile,{staff,agency:g('s-agency'),venue:v,from:g('s-from'),to:g('s-to'),shun:g('s-shun'),shunPrice:num(g('s-shunp'))||0,target:num(g('s-target'))||0});
+  applyShunPrice();save();toast('保存しました');go('home');
+}
+
+// ===== 共通: 送信 =====
+function base(){const P=S.profile;return {date:TODAY,venue:P.venue,staff:P.staff,agency:P.agency||''}}
+function rid(){return 's'+Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
+async function post(kind,data,title){
+  const item={rid:rid(),kind,data,title,at:new Date().toLocaleString('ja-JP',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'})};
+  S.queue.push(item);save();updQ();
+  const ok=await trySend(item);
+  return ok;
+}
+async function trySend(item){
+  try{
+    const ctl=new AbortController();const t=setTimeout(()=>ctl.abort(),20000);
+    const r=await fetch(API,{method:'POST',body:JSON.stringify({action:'saiji_submit',kind:item.kind,data:item.data,rid:item.rid}),signal:ctl.signal});
+    clearTimeout(t);
+    const j=await r.json();
+    if(j&&j.ok){
+      S.queue=S.queue.filter(x=>x.rid!==item.rid);
+      S.log.push({title:item.title,at:item.at,state:'本部に届きました'+(j.form&&j.form.indexOf('OK')===0?'（売上日報にも反映）':'')});
+      S.log=S.log.slice(-60);save();updQ();return true}
+    // 受け口がまだ無い（更新前）・入力不備など → 送信待ちに残し、LINEで送ってもらう
+    item.err=j&&j.error||'error';save();updQ();return false;
+  }catch(e){item.err='通信できません';save();updQ();return false}
+}
+async function flushQueue(manual){
+  if(!S.queue.length){if(manual)toast('送信待ちはありません');return}
+  let n=0;for(const it of S.queue.slice()){if(await trySend(it))n++}
+  if(manual)toast(S.queue.length?`${S.queue.length}件 まだ送れていません。電波の良い所で再度押すか、LINEで送ってください`:`${n}件 送れました`);
+  if(document.getElementById('v-home').classList.contains('on'))renderHome();
+}
+function updQ(){const n=S.queue.length;document.getElementById('qlabel').innerHTML=n?`送信待ち <span class="dot">${n}</span>`:'送信待ち 0'}
+window.addEventListener('online',()=>flushQueue(false));
+
+// ===== 開店前 =====
+function renderOpen(){
+  const D=day();D.open=D.open||{c:{}};
+  document.getElementById('htitle').textContent='開店前チェック';
+  document.getElementById('open-list').innerHTML=CHECKS.map((c,i)=>`<label class="chk"><input type="checkbox" data-i="${i}" ${D.open.c[i]?'checked':''}><div><b>${c[0]}</b><span>${c[1]}</span></div></label>`).join('');
+  document.querySelectorAll('#open-list input').forEach(e=>e.onchange=()=>{D.open.c[e.dataset.i]=e.checked;save()});
+  const m=document.getElementById('open-memo');m.value=D.open.memo||'';m.oninput=()=>{D.open.memo=m.value;save()};
+}
+async function sendOpen(){
+  const D=day(),o=D.open;const done=CHECKS.filter((c,i)=>o.c[i]).length;
+  if(done<CHECKS.length&&!confirm(`チェックが ${CHECKS.length-done}個 残っています。このまま送りますか？`))return;
+  o.sentAt=Date.now();save();
+  const ok=await post('open',{...base(),checks:CHECKS.map((c,i)=>[c[0],!!o.c[i]]),memo:o.memo||''},'開店準備OK');
+  toast(ok?'送りました。今日もよろしくお願いします！':'送信待ちに入れました（電波が戻ったら自動で送ります）');
+  lineOf('open');
+}
+
+// ===== 入荷・検品 =====
+function prevLeft(k){const y=day(prevDay(TODAY)).daily;return y&&y.products&&y.products[k]?y.products[k].left:null}
+function renderDelivery(){
+  const D=day();D.delivery=D.delivery||{q:{},prev:{}};const dv=D.delivery;
+  document.getElementById('htitle').textContent='入荷・検品';
+  document.getElementById('dl-body').innerHTML=PRODUCTS.map(p=>{const pv=dv.prev[p.k]??prevLeft(p.k);
+    return `<tr><td class="nm">${esc(p.n)}${p.k==='shun'&&S.profile.shun?'<small>'+esc(S.profile.shun)+'</small>':''}${p.cold?'<small>要冷蔵</small>':''}</td>
+    <td><input type="number" inputmode="numeric" data-k="${p.k}" data-f="prev" value="${pv??''}" placeholder="0"></td>
+    <td><input type="number" inputmode="numeric" data-k="${p.k}" data-f="q" value="${dv.q[p.k]??''}" placeholder="0"></td></tr>`}).join('');
+  document.querySelectorAll('#dl-body input').forEach(e=>e.oninput=()=>{dv[e.dataset.f][e.dataset.k]=num(e.value);save()});
+  const m=document.getElementById('dl-memo');m.value=dv.memo||'';m.oninput=()=>{dv.memo=m.value;save()};
+}
+async function sendDelivery(){
+  const dv=day().delivery;dv.sentAt=Date.now();save();
+  const items={};PRODUCTS.forEach(p=>items[p.k]={prev:dv.prev[p.k]??prevLeft(p.k),in:dv.q[p.k]??0});
+  const ok=await post('delivery',{...base(),items,memo:dv.memo||''},'入荷・検品');
+  toast(ok?'送りました':'送信待ちに入れました');lineOf('delivery');
+}
+
+// ===== 途中報告 =====
+let pgCrowd='';
+function renderProgress(){
+  document.getElementById('htitle').textContent='途中報告';
+  const D=day();D.pg=D.pg||{left:{}};const g=D.pg;
+  const s=document.getElementById('pg-sales'),c=document.getElementById('pg-cust'),m=document.getElementById('pg-memo');
+  s.value=g.sales??'';c.value=g.cust??'';m.value=g.memo||'';pgCrowd=g.crowd||'';
+  const upd=()=>{g.sales=num(s.value);g.cust=num(c.value);g.memo=m.value;save();pgTarget()};
+  s.oninput=c.oninput=m.oninput=upd;pgTarget();
+  document.getElementById('pg-body').innerHTML=PRODUCTS.map(p=>`<tr><td class="nm">${esc(pname(p))}</td><td style="width:42%"><input type="number" inputmode="numeric" data-k="${p.k}" value="${g.left[p.k]??''}" placeholder="残り"></td></tr>`).join('');
+  document.querySelectorAll('#pg-body input').forEach(e=>e.oninput=()=>{g.left[e.dataset.k]=num(e.value);save()});
+  chips('pg-crowd',CROWD,()=>pgCrowd,v=>{pgCrowd=v;g.crowd=v;save()});
+}
+function pgTarget(){
+  const t=S.profile.target,s=num(document.getElementById('pg-sales').value)||0,el=document.getElementById('pg-target');
+  if(!t){el.innerHTML='';return}
+  const r=Math.min(100,Math.round(s/t*100));
+  el.innerHTML=`<div class="small" style="margin-top:8px">今日の目標 ${yen(t)} まで あと <b>${yen(Math.max(0,t-s))}</b>（達成率 ${Math.round(s/t*100)}%）</div><div class="bar"><i style="width:${r}%"></i></div>`;
+}
+async function sendProgress(){
+  const g=day().pg;if(!g.sales){toast('今の時点の売上を入れてください');return}
+  const D=day();D.progress=D.progress||[];
+  const at=new Date().toTimeString().slice(0,5);
+  const data={...base(),time:at,salesIncl:g.sales,customers:g.cust??'',left:{...g.left},crowd:g.crowd||'',memo:g.memo||''};
+  D.progress.push(data);save();
+  const ok=await post('progress',data,`途中報告 ${at}`);
+  toast(ok?'送りました。この調子でいきましょう！':'送信待ちに入れました');lineOf('progress');
+}
+
+// ===== 閉店日報 =====
+let dyCrowd='',dyWeather='';
+function dd(){const D=day();D.dy=D.dy||{products:{},req:{},supply:[]};return D.dy}
+function renderDaily(){
+  document.getElementById('htitle').textContent='閉店日報';
+  const y=dd(),dv=day().delivery||{q:{},prev:{}};
+  const $=id=>document.getElementById(id);
+  $('dy-date').value=TODAY;
+  $('dy-date').onchange=()=>{const v=$('dy-date').value;if(v){TODAY=v;renderDaily()}};
+  $('dy-incl').value=y.incl??'';$('dy-excl').value=y.excl??'';$('dy-cust').value=y.cust??'';$('dy-cust-unk').checked=!!y.custUnk;
+  ['good','voice','trouble','next'].forEach(k=>{const e=$('dy-'+k);e.value=y[k]||'';e.oninput=()=>{y[k]=e.value;save()}});
+  $('dy-incl').oninput=()=>{y.incl=num($('dy-incl').value);if(!y.exclManual){y.excl=y.incl?Math.round(y.incl/1.08):null;$('dy-excl').value=y.excl??''}save();dyCheck()};
+  $('dy-excl').oninput=()=>{y.excl=num($('dy-excl').value);y.exclManual=y.excl!==null;save();dyCheck()};
+  $('dy-cust').oninput=()=>{y.cust=num($('dy-cust').value);save();dyCheck()};
+  $('dy-cust-unk').onchange=()=>{y.custUnk=$('dy-cust-unk').checked;save();dyCheck()};
+  // 商品表（昨日の残り・届いた数は検品の値を引き継ぐ）
+  $('dy-body').innerHTML=PRODUCTS.map(p=>{const r=y.products[p.k]||{};
+    const prev=r.prev??dv.prev[p.k]??prevLeft(p.k),inn=r.in??dv.q[p.k];
+    y.products[p.k]=Object.assign({prev,in:inn},r);
+    const f=(n,v)=>`<td><input type="number" inputmode="numeric" data-k="${p.k}" data-f="${n}" value="${v??''}" placeholder="0"></td>`;
+    return `<tr><td class="nm">${esc(p.n)}<small>${p.k==='shun'&&S.profile.shun?esc(S.profile.shun)+' ':''}${p.p}円${p.cold?'・要冷蔵':''}</small></td>${f('prev',prev)}${f('in',inn)}${f('loss',r.loss)}${f('left',r.left)}
+      <td><input type="number" inputmode="numeric" class="sold" data-k="${p.k}" data-f="sold" value="${r.sold??''}" placeholder="0"></td></tr>`}).join('');
+  document.querySelectorAll('#dy-body input').forEach(e=>e.oninput=()=>{
+    const r=y.products[e.dataset.k],f=e.dataset.f;r[f]=num(e.value);
+    if(f==='sold'){r.soldManual=r.sold!==null}else if(!r.soldManual){r.sold=calcSold(r);const s=document.querySelector(`#dy-body input[data-f=sold][data-k=${e.dataset.k}]`);s.value=r.sold??''}
+    save();dyCheck()});
+  PRODUCTS.forEach(p=>{const r=y.products[p.k];if(!r.soldManual&&r.sold==null){r.sold=calcSold(r)}});
+  document.querySelectorAll('#dy-body input[data-f=sold]').forEach(e=>{const r=y.products[e.dataset.k];e.value=r.sold??''});
+  dyCrowd=y.crowd||'';dyWeather=y.weather||'';
+  $('dy-crowd').innerHTML='';
+  chips('dy-crowd',WEATHER.concat(CROWD),v=>WEATHER.includes(v)?dyWeather:dyCrowd,v=>{if(WEATHER.includes(v)){dyWeather=y.weather=v}else{dyCrowd=y.crowd=v}save()});
+  $('dy-req').innerHTML=PRODUCTS.map(p=>`<tr><td class="nm">${esc(pname(p))}</td><td style="width:42%"><input type="number" inputmode="numeric" data-k="${p.k}" value="${y.req[p.k]??''}" placeholder="ほしい数"></td></tr>`).join('');
+  document.querySelectorAll('#dy-req input').forEach(e=>e.oninput=()=>{y.req[e.dataset.k]=num(e.value);save()});
+  multiChips('dy-supply',SUPPLIES,y.supply,()=>save());
+  save();dyCheck();
+}
+function calcSold(r){if(r.left==null)return null;const v=(r.prev||0)+(r.in||0)-(r.loss||0)-(r.left||0);return v}
+function dyCheck(){
+  const y=dd(),$=id=>document.getElementById(id);
+  const incl=y.incl||0,cust=y.custUnk?0:(y.cust||0);
+  let est=0,cnt=0,neg=[];
+  PRODUCTS.forEach(p=>{const r=y.products[p.k]||{};if(r.sold!=null){est+=r.sold*p.p;cnt+=r.sold;if(r.sold<0)neg.push(pname(p))}});
+  document.querySelectorAll('#dy-body input[data-f=sold]').forEach(e=>e.classList.toggle('bad',(num(e.value)||0)<0));
+  const prevD=day(prevDay(TODAY)).daily;
+  const diff=prevD&&prevD.salesIncl&&incl?Math.round((incl/prevD.salesIncl-1)*100):null;
+  $('dy-sum').innerHTML=`<div><b>${incl?yen(incl):'-'}</b><span>売上(税込)</span></div><div><b>${cust?Math.round(incl/cust).toLocaleString()+'円':'-'}</b><span>客単価</span></div><div><b>${diff==null?'-':(diff>=0?'+':'')+diff+'%'}</b><span>昨日比</span></div>`;
+  let h='';
+  if(neg.length)h+=`<div class="note bad">${neg.join('・')} の売れた数がマイナスです。昨日の残り・届いた数・夜の残りを見直してください。</div>`;
+  if(incl&&cnt>0){const gap=Math.round((incl-est)/incl*100);
+    if(Math.abs(gap)>15)h+=`<div class="note warn">売れた数から計算した売上は 約${yen(est)}、レジは ${yen(incl)}（差 ${gap>0?'+':''}${gap}%）。数え間違い・セット商品・値引きが無いか確認してください。合っていればそのまま送ってOKです。</div>`;
+    else h+=`<div class="note ok">売れた数（${cnt}個・約${yen(est)}）とレジの売上が合っています。</div>`}
+  $('dy-check').innerHTML=h;
+}
+function dyErrors(){
+  const y=dd(),e=[];
+  if(!y.incl||y.incl<=0)e.push('今日の売上（税込）');
+  if(!y.custUnk&&(y.cust==null||y.cust<0))e.push('客数（わからない時は「客数がわからない」に印）');
+  if(!PRODUCTS.some(p=>(y.products[p.k]||{}).sold!=null))e.push('商品ごとの「夜の残り」か「売れた数」');
+  if(y.incl&&y.cust&&!y.custUnk){const u=y.incl/y.cust;if(u<150||u>8000)e.push(`客単価が ${Math.round(u)}円 になっています。売上と客数を見直してください`)}
+  return e;
+}
+function formComment(y){
+  const L=[];
+  L.push(`販売員：${S.profile.staff}${S.profile.agency?'（'+S.profile.agency+'）':''}`);
+  if(y.weather||y.crowd)L.push(`天気・人の流れ：${[y.weather,y.crowd].filter(Boolean).join('／')}`);
+  if(y.good)L.push(`よく売れた：${y.good}`);
+  if(y.voice)L.push(`お客様の声：${y.voice}`);
+  if(y.trouble)L.push(`困ったこと：${y.trouble}`);
+  if(y.next)L.push(`明日やること：${y.next}`);
+  const loss=PRODUCTS.filter(p=>(y.products[p.k]||{}).loss).map(p=>`${pname(p)}${y.products[p.k].loss}`);
+  if(loss.length)L.push(`ロス：${loss.join('、')}`);
+  // 旬どらの味別（予測アプリが「名前→数」の形で読む）
+  if(S.profile.shun){const s=(y.products.shun||{}).sold;L.push(`旬どらの味：${S.profile.shun}→${s??0}`)}
+  return L.join('\n');
+}
+async function sendDaily(){
+  const errs=dyErrors();
+  if(errs.length){document.getElementById('dy-err').innerHTML=`<div class="note bad"><b>まだ入っていない／確認が必要な所</b><br>・${errs.map(esc).join('<br>・')}</div>`;toast('入力をご確認ください');return}
+  document.getElementById('dy-err').innerHTML='';
+  const y=dd(),D=day();
+  const products={};PRODUCTS.forEach(p=>{const r=y.products[p.k]||{};products[p.k]={name:pname(p),prev:r.prev??0,in:r.in??0,loss:r.loss??0,left:r.left??0,sold:r.sold??0}});
+  const data={...base(),salesIncl:y.incl,salesExcl:y.excl||Math.round(y.incl/1.08),customers:y.custUnk?0:y.cust,customersUnknown:!!y.custUnk,
+    products,weather:y.weather||'',crowd:y.crowd||'',good:y.good||'',voice:y.voice||'',trouble:y.trouble||'',next:y.next||'',
+    request:{...y.req},supply:[...y.supply],shun:S.profile.shun||'',formComment:formComment(y)};
+  D.daily={...data,sentAt:Date.now()};save();
+  const btn=document.getElementById('dy-send');btn.disabled=true;btn.textContent='送っています…';
+  const ok=await post('daily',data,`閉店日報 ${jdate(TODAY)}`);
+  btn.disabled=false;btn.textContent='日報を送る';
+  toast(ok?'日報が届きました。今日も一日ありがとうございました！':'送信待ちに入れました。下のLINEでも送ってください');
+  lineOf('daily');
+}
+
+// ===== 困りごと =====
+let trKind='',trProd=[];
+function renderTrouble(){document.getElementById('htitle').textContent='困った・すぐ連絡';
+  chips('tr-kind',TROUBLE,()=>trKind,v=>trKind=v);trProd=[];multiChips('tr-prod',PRODUCTS.map(pname),trProd,()=>{})}
+async function sendTrouble(){
+  const m=document.getElementById('tr-memo').value.trim();if(!m){toast('くわしい内容を入れてください');return}
+  const data={...base(),kind:trKind||'その他',products:[...trProd],memo:m,urgent:document.getElementById('tr-urgent').checked};
+  day().lastTrouble=data;save();
+  post('trouble',data,`困りごと：${data.kind}`);
+  lineOf('trouble');document.getElementById('tr-memo').value='';
+}
+
+// ===== LINE文面 =====
+function head(t){const P=S.profile;return `【どら山 ${t}】${jdate(TODAY)} ${P.venue}\n${P.staff}${P.agency?'（'+P.agency+'）':''}`}
+function lineText(kind){
+  const D=day();
+  if(kind==='open'){const o=D.open||{c:{}};const ng=CHECKS.filter((c,i)=>!o.c[i]).map(c=>c[0]);
+    return head('開店準備OK')+`\n入館・身だしなみ・検品・陳列・レジ確認できました。${ng.length?'\n未確認：'+ng.join('、'):''}${o.memo?'\n'+o.memo:''}\n（売場の写真を送ります）`}
+  if(kind==='delivery'){const dv=D.delivery||{q:{},prev:{}};
+    return head('入荷・検品')+'\n'+PRODUCTS.map(p=>`${pname(p)}：届いた ${dv.q[p.k]??0}（昨日の残り ${dv.prev[p.k]??prevLeft(p.k)??0}）`).join('\n')+(dv.memo?'\n気づいたこと：'+dv.memo:'')}
+  if(kind==='progress'){const g=(D.progress||[]).slice(-1)[0]||D.pg||{};const t=S.profile.target;
+    return head(`途中報告 ${g.time||new Date().toTimeString().slice(0,5)}`)+`\n売上 ${yen(g.salesIncl??g.sales)}${g.customers||g.cust?' ／ 客数 '+(g.customers||g.cust)+'人':''}${t?`（目標の${Math.round((g.salesIncl??g.sales??0)/t*100)}%）`:''}\n残り：`+PRODUCTS.map(p=>`${pname(p)} ${(g.left||{})[p.k]??'-'}`).join('、')+(g.crowd?'\n人の流れ：'+g.crowd:'')+(g.memo?'\n'+g.memo:'')}
+  if(kind==='daily'){const y=D.daily||{};if(!y.salesIncl)return head('閉店日報')+'\n（まだ日報が入っていません）';
+    const u=y.customers?Math.round(y.salesIncl/y.customers).toLocaleString()+'円':'-';
+    const req=PRODUCTS.filter(p=>(y.request||{})[p.k]).map(p=>`${pname(p)} ${y.request[p.k]}`);
+    return head('閉店日報')+`\n売上（税込）${yen(y.salesIncl)}\n客数 ${y.customersUnknown?'不明':y.customers+'人'} ／ 客単価 ${u}\n\n■売れた数\n`+
+      PRODUCTS.map(p=>`${pname(p)} ${y.products[p.k].sold}（夜の残り ${y.products[p.k].left}${y.products[p.k].loss?'・ロス '+y.products[p.k].loss:''}）`).join('\n')+
+      (req.length?`\n\n■明日ほしい数\n${req.join('、')}`:'')+((y.supply||[]).length?`\n■足りない備品：${y.supply.join('、')}`:'')+
+      `\n\n■ふりかえり\n`+[y.weather||y.crowd?`天気・人の流れ：${[y.weather,y.crowd].filter(Boolean).join('／')}`:'',y.good&&`よく売れた：${y.good}`,y.voice&&`お客様の声：${y.voice}`,y.trouble&&`困ったこと：${y.trouble}`,y.next&&`明日やること：${y.next}`].filter(Boolean).join('\n')+
+      `\n\n今日もありがとうございました。`}
+  if(kind==='trouble'){const t=D.lastTrouble||{};return `${t.urgent?'【至急】':''}`+head('連絡：'+(t.kind||''))+(t.products&&t.products.length?'\n商品：'+t.products.join('、'):'')+'\n'+(t.memo||'')}
+  return '';
+}
+let LT='';
+function lineOf(kind){LT=lineText(kind);document.getElementById('lt').textContent=LT;
+  document.querySelectorAll('.view').forEach(e=>e.classList.toggle('on',e.id==='v-line'));document.getElementById('htitle').textContent='LINEに送る';scrollTo(0,0)}
+function openLine(){location.href='https://line.me/R/share?text='+encodeURIComponent(LT)}
+async function copyLine(){try{await navigator.clipboard.writeText(LT);toast('コピーしました。LINEに貼り付けて送ってください')}catch(e){
+  const t=document.createElement('textarea');t.value=LT;document.body.appendChild(t);t.select();document.execCommand('copy');t.remove();toast('コピーしました')}}
+
+// ===== 部品 =====
+function chips(id,list,get,set){const el=document.getElementById(id);
+  el.innerHTML=list.map(v=>`<button type="button" class="chip${get(v)===v?' on':''}">${esc(v)}</button>`).join('');
+  el.querySelectorAll('.chip').forEach((b,i)=>b.onclick=()=>{const v=list[i];set(get(v)===v?'':v);
+    el.querySelectorAll('.chip').forEach((c,j)=>c.classList.toggle('on',get(list[j])===list[j]))})}
+function multiChips(id,list,arr,cb){const el=document.getElementById(id);
+  el.innerHTML=list.map(v=>`<button type="button" class="chip${arr.includes(v)?' on':''}">${esc(v)}</button>`).join('');
+  el.querySelectorAll('.chip').forEach((b,i)=>b.onclick=()=>{const v=list[i],k=arr.indexOf(v);k<0?arr.push(v):arr.splice(k,1);b.classList.toggle('on');cb()})}
+
+// ===== 本部用 =====
+function renderHQ(){document.getElementById('htitle').textContent='本部';
+  document.getElementById('hq-date').value=document.getElementById('hq-date').value||ymd();
+  try{document.getElementById('hq-code').value=localStorage.getItem('dorayama_saiji_hq')||''}catch(e){}}
+async function loadHQ(){
+  const d=document.getElementById('hq-date').value,c=document.getElementById('hq-code').value.trim(),out=document.getElementById('hq-out');
+  try{localStorage.setItem('dorayama_saiji_hq',c)}catch(e){}
+  out.innerHTML='<div class="card small">読み込み中…</div>';
+  try{const r=await fetch(API+'?action=saiji_list&date='+encodeURIComponent(d)+'&code='+encodeURIComponent(c));const j=await r.json();
+    if(!j.ok){out.innerHTML=`<div class="note bad">${j.error==='BAD_CODE'?'合言葉が違います':'読み込めませんでした（'+esc(j.error)+'）'}</div>`;return}
+    const by={};j.items.forEach(x=>{(by[x.venue]=by[x.venue]||[]).push(x)});
+    let tot=0,cust=0,h='';
+    Object.keys(by).sort().forEach(v=>{const L=by[v];const dl=L.filter(x=>x.kind==='閉店日報').slice(-1)[0];const pg=L.filter(x=>x.kind==='途中報告').slice(-1)[0];
+      if(dl){tot+=Number(dl.salesIncl)||0;cust+=Number(dl.customers)||0}
+      const p=dl&&dl.data&&dl.data.products||{};
+      h+=`<div class="card"><div class="hq-v"><b>${esc(v)}</b><span>${dl?'<span class="tag d">日報済</span>':pg?'<span class="tag p">途中</span>':'<span class="tag t">日報まだ</span>'}</span></div>
+      <div class="small">${esc((dl||L[L.length-1]).staff)} ${esc((dl||L[L.length-1]).agency||'')}</div>
+      ${dl?`<div style="font-size:20px;font-weight:800">${yen(dl.salesIncl)} <span class="small">${dl.customers}人${dl.form?' ／ フォーム '+esc(dl.form):''}</span></div>
+        <div class="small">${PRODUCTS.map(q=>p[q.k]?`${esc(p[q.k].name||q.n)} ${p[q.k].sold}（残${p[q.k].left}）`:'').filter(Boolean).join('、')}</div>`
+        :pg?`<div style="font-size:18px;font-weight:800">${esc(pg.data.time||'')}時点 ${yen(pg.salesIncl)}</div>`:''}
+      ${L.filter(x=>x.kind==='困りごと').map(x=>`<div class="note warn">${esc(x.data.kind)}：${esc(x.data.memo)}</div>`).join('')}
+      ${dl&&dl.data.formComment?`<details><summary class="small">ふりかえりを読む</summary><pre class="lt">${esc(dl.data.formComment)}</pre></details>`:''}</div>`});
+    const miss=(j.recentVenues||[]).filter(x=>!by[x.venue]||!by[x.venue].some(y=>y.kind==='閉店日報'));
+    out.innerHTML=`<div class="card"><b>${esc(j.date)} 合計 ${yen(tot)} ／ ${cust}人</b><div class="small">日報が届いた会場の合計（途中報告は含まない）</div></div>`+
+      (miss.length?`<div class="note bad">日報がまだの会場（直近7日に日報があった会場）：${miss.map(x=>esc(x.venue)).join('、')}</div>`:'')+(h||'<div class="card small">この日の報告はまだありません</div>');
+  }catch(e){out.innerHTML='<div class="note bad">通信できませんでした</div>'}
+}
+
+// ===== 起動 =====
+(function(){const h=location.hash.slice(1);const q=new URLSearchParams(location.search);
+  if(q.has('hq')){go('hq');return}
+  go(['open','delivery','progress','daily','trouble','setup'].includes(h)?h:'home');
+  if(S.queue.length)flushQueue(false)})();
+</script>
+</body>
+</html>

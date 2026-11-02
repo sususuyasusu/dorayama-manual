@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1d5b37">
+<meta name="robots" content="noindex">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="icon" href="../img/icon-192.png">
+<title>どら山 催事販売マニュアル</title>
+<style>
+:root{--w:760px;--bg:#1d5b37;--card:#fbfaf5;--ink:#2a2420;--sub:#776e65;--line:#e3ddd1;--cream:#f4f8ee;--onbg:#bcd3a8;
+  --coral:#d8552c;--green:#3f8a1e;--amber:#b97300;--blue:#2f6fc0;--red:#c9342b;
+  --coral-bg:#fcebe3;--green-bg:#eaf4dc;--amber-bg:#fdf0d8;--blue-bg:#e6effb;--gray-bg:#efebe3;
+  --shadow:0 1px 2px rgba(60,40,20,.06),0 2px 10px rgba(60,40,20,.05)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:64px}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP","Yu Gothic",sans-serif;
+  background:var(--bg);color:var(--ink);font-size:15.5px;line-height:1.75;-webkit-font-smoothing:antialiased}
+.top{position:sticky;top:0;z-index:10;background:var(--bg);border-bottom:1px solid rgba(255,255,255,.12)}
+.top .in{max-width:var(--w);margin:0 auto;padding:10px 14px;display:flex;align-items:center;gap:10px}
+.top img{height:24px}
+.top b{color:var(--cream);font-size:16px;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.top a{color:var(--cream);text-decoration:none;font-weight:800;font-size:13px;border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:5px 12px;white-space:nowrap}
+.wrap{max-width:var(--w);margin:0 auto;padding:0 12px 60px}
+.hero{color:var(--cream);padding:26px 4px 6px}
+.hero .k{font-size:13px;color:var(--onbg);font-weight:800;letter-spacing:.08em}
+.hero h1{font-size:30px;line-height:1.3;margin:6px 0 8px}
+.hero p{margin:0;color:#dfe9d4}
+.promise{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:18px 0 6px}
+.promise div{background:linear-gradient(160deg,#f7d774,#f2b43c);color:#3b2a06;border-radius:14px;padding:12px 11px;box-shadow:var(--shadow)}
+.promise b{display:block;font-size:20px;line-height:1.2}
+.promise span{font-size:12.5px;font-weight:700;line-height:1.45;display:block;margin-top:4px}
+.toc{background:var(--card);border-radius:14px;padding:12px 14px;margin:16px 0;box-shadow:var(--shadow)}
+.toc b{font-size:13px;color:var(--sub)}
+.toc ol{margin:6px 0 0;padding-left:1.5em;columns:2;column-gap:20px;font-size:14.5px}
+.toc a{color:var(--ink);text-decoration:none;font-weight:700}
+.app{display:flex;gap:12px;align-items:center;background:var(--coral);color:#fff;border-radius:14px;padding:13px 15px;text-decoration:none;box-shadow:var(--shadow);margin:12px 0}
+.app svg{width:30px;height:30px;flex:none}
+.app b{font-size:16.5px;display:block}
+.app span{font-size:12.5px;opacity:.92}
+section.ch{background:var(--card);border-radius:16px;box-shadow:var(--shadow);padding:18px 18px 14px;margin:14px 0}
+section.ch>h2{display:flex;align-items:center;gap:10px;font-size:21px;line-height:1.35;margin:0 0 8px}
+section.ch>h2 .no{flex:none;width:34px;height:34px;border-radius:10px;background:var(--bg);color:var(--cream);display:grid;place-items:center;font-size:16px}
+h3{font-size:16.5px;margin:18px 0 6px;padding-left:10px;border-left:4px solid var(--coral);line-height:1.4}
+p{margin:6px 0}
+ul,ol{margin:6px 0;padding-left:1.4em}
+li{margin:3px 0}
+.lead{color:var(--sub);font-size:14px;margin-top:0}
+table{width:100%;border-collapse:collapse;font-size:14px;margin:8px 0}
+th,td{border:1px solid var(--line);padding:7px 8px;vertical-align:top;text-align:left}
+th{background:var(--gray-bg);font-size:13px}
+td.c,th.c{text-align:center}
+td.r{text-align:right;white-space:nowrap}
+.tbl{overflow-x:auto}
+.box{border-radius:12px;padding:10px 13px;margin:10px 0;font-size:14.5px}
+.box b:first-child{display:block}
+.ok{background:var(--green-bg);color:#284f14}
+.warn{background:var(--amber-bg);color:#6b4300}
+.bad{background:var(--coral-bg);color:#7e2511}
+.info{background:var(--blue-bg);color:#1b467c}
+.say{background:#fff;border:1.5px solid #f0d58a;border-radius:12px;padding:9px 12px;margin:8px 0}
+.say .w{font-size:12px;font-weight:800;color:var(--amber)}
+.say q{display:block;font-weight:800;font-size:15.5px;quotes:"「" "」"}
+.tl{list-style:none;padding:0;margin:10px 0;border-left:3px solid var(--line);margin-left:8px}
+.tl li{position:relative;padding:2px 0 10px 18px}
+.tl li:before{content:"";position:absolute;left:-8px;top:8px;width:13px;height:13px;border-radius:50%;background:var(--card);border:3px solid var(--green)}
+.tl .t{font-weight:800;color:var(--green);font-size:13.5px;display:block}
+.tl .a{display:inline-block;font-size:11.5px;font-weight:800;background:var(--coral-bg);color:var(--coral);border-radius:6px;padding:0 7px;margin-left:4px}
+pre.line{white-space:pre-wrap;font-family:inherit;background:#fff;border:1.5px dashed #b9d9a3;border-radius:12px;padding:10px 12px;font-size:14px;margin:8px 0}
+.ng li::marker{content:"× ";color:var(--red);font-weight:800}
+.ck{list-style:none;padding-left:0}
+.ck li{padding-left:28px;position:relative}
+.ck li:before{content:"";position:absolute;left:2px;top:5px;width:16px;height:16px;border:2px solid #9b9183;border-radius:4px}
+.foot{color:var(--onbg);text-align:center;font-size:12.5px;margin-top:20px}
+.pill{display:inline-block;font-size:11.5px;font-weight:800;border-radius:999px;padding:1px 9px;background:var(--gray-bg);color:var(--sub);vertical-align:2px}
+@media (max-width:560px){.toc ol{columns:1}.promise{grid-template-columns:1fr}.hero h1{font-size:25px}section.ch{padding:15px 13px 10px}}
+@media print{
+  :root{--card:#fff}
+  body{background:#fff;font-size:11pt;line-height:1.6}
+  .top,.app,.noprint{display:none!important}
+  .hero{color:var(--ink);padding-top:0}.hero p{color:var(--ink)}.hero .k{color:var(--sub)}
+  section.ch{box-shadow:none;border:1px solid #ccc;break-inside:auto;page-break-before:always;margin:0}
+  section.ch.keep{page-break-before:auto}
+  h3,table,.box,.say,pre.line{break-inside:avoid}
+  .toc{box-shadow:none;border:1px solid #ccc}
+  a{color:inherit;text-decoration:none}
+}
+</style>
+</head>
+<body>
+<div class="top"><div class="in"><img src="../img/header-logo.png" alt=""><b>催事販売マニュアル</b><a href="./report.html">報告アプリ</a></div></div>
+<div class="wrap">
+
+<div class="hero">
+  <div class="k">販売員のみなさまへ（自社スタッフ・派遣・紹介所 共通）／2026年11月版</div>
+  <h1>どら山 催事販売マニュアル</h1>
+  <p>百貨店や駅ナカの催事で、どら山のどら焼きを売っていただく方のための手引きです。初日の前に一度ぜんぶ読み、当日はスマホで必要なところを開いてください。わからないことは、遠慮なく会期のLINEグループで聞いてください。</p>
+  <div class="promise">
+    <div><b>声で、売場を明るく</b><span>どら焼きは、声と笑顔で売れ方が大きく変わります。最初の一声は大きく。</span></div>
+    <div><b>数字は、正直にすぐ</b><span>売上・残り・困りごとは、良くても悪くもそのまま早く。毎晩の日報は必ず。</span></div>
+    <div><b>迷ったら、すぐLINE</b><span>一人で判断しない。写真1枚と一言で、本部がすぐ動きます。</span></div>
+  </div>
+</div>
+
+<a class="app" href="./report.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M10 18h4M9 7h6M9 11h6"/></svg>
+  <div><b>催事報告アプリを開く</b><span>開店前チェック・検品・途中報告・閉店日報・困りごと連絡が、ここ1つでできます</span></div></a>
+
+<nav class="toc">
+  <b>もくじ</b>
+  <ol>
+    <li><a href="#c1">どら山について</a></li>
+    <li><a href="#c2">初日の前にやること</a></li>
+    <li><a href="#c3">1日の流れ</a></li>
+    <li><a href="#c4">開店準備と陳列</a></li>
+    <li><a href="#c5">声かけと接客</a></li>
+    <li><a href="#c6">商品の知識</a></li>
+    <li><a href="#c7">レジとお金</a></li>
+    <li><a href="#c8">納品・在庫・ロス</a></li>
+    <li><a href="#c9">報告（アプリとLINE）</a></li>
+    <li><a href="#c10">困ったとき早見表</a></li>
+    <li><a href="#c11">衛生と、してはいけないこと</a></li>
+    <li><a href="#c12">最終日と撤収</a></li>
+    <li><a href="#c13">派遣会社・紹介所の方へ</a></li>
+    <li><a href="#c14">チェックリスト（印刷用）</a></li>
+  </ol>
+</nav>
+
+<!-- 1 -->
+<section class="ch keep" id="c1">
+<h2><span class="no">1</span>どら山について</h2>
+<p>どら山は、東京・門前仲町の工房で毎日どら焼きを焼いている専門店です。卵白を泡立てたふわふわの「おふとん生地」を銅板で一枚ずつ手焼きし、十勝小豆のあんこや白あんをはさんでいます。催事でお客様が手に取るのは、前日〜当日に工房で焼いたものです。</p>
+<p>催事は、どら山を知らない方に初めて食べてもらえる大切な場所です。「遠くから来てくれる方」「催事で毎日寄ってくださる方」が、催事をきっかけにどんどん増えています。あなたの一声が、その最初の出会いになります。</p>
+<div class="box ok"><b>私たちが大切にしていること</b>焼き菓子は「ひとつひとつの手間」が味になります。売場でも同じで、ていねいな一言・きれいな陳列・正確な報告の積み重ねが、売上とまた来てくれるお客様につながります。</div>
+<h3>あなたの役割</h3>
+<ul>
+  <li>どら山の顔として、売場を明るく元気にする</li>
+  <li>商品をおいしそうに見せて、気持ちよくお買い物していただく</li>
+  <li>売上・残り・お客様の声を、本部に正確に届ける（毎日の製造数はこの報告で決まります）</li>
+</ul>
+</section>
+
+<!-- 2 -->
+<section class="ch" id="c2">
+<h2><span class="no">2</span>初日の前にやること</h2>
+<div class="box bad"><b>入店手続きが終わっていないと、会場に入れません</b>百貨店は、販売員1人ずつの登録（顔写真・Web登録・研修動画やeラーニング・説明会など）を求めます。締め切りは「初日の5日前」などと早いことが多いです。派遣会社・紹介所の方は、名前が決まったらすぐ本部へ（第13章）。</div>
+<h3>やることリスト</h3>
+<ol>
+  <li><b>会場の入店手続き</b>：本部か派遣会社から届く案内のとおりに登録。研修動画・レジ研修がある会場は必ず受ける</li>
+  <li><b>会期のLINEグループに入る</b>：「どら山（会場名）（会期）」という名前のグループです。本部・工房・ほかの販売員が入っています</li>
+  <li><b>報告アプリをスマホに入れる</b>：本部から届くリンクを開き、画面下の共有ボタン →「ホーム画面に追加」。最初の設定（名前・所属・会場）をしておく</li>
+  <li><b>集合場所と時刻を確認</b>：従業員入口・朝会の場所・名札の受け取り場所は会場ごとに違います。会期LINEのお知らせを読む</li>
+  <li><b>このマニュアルを読む</b>：特に第5章（声かけ）・第6章（商品）・第9章（報告）</li>
+</ol>
+<h3>持ち物</h3>
+<div class="tbl"><table>
+<tr><th>必ず</th><td>身分証／スマホ（充電しておく）と充電器／筆記用具・油性ペン／名札（派遣会社の名札がある方）／会場からの入店証・説明書類</td></tr>
+<tr><th>服装</th><td>清潔な白か黒のシャツ・黒のパンツ・歩きやすい黒い靴。エプロン・帽子（三角巾）は本部が用意する会場もあるので、案内を確認</td></tr>
+<tr><th>あると良い</th><td>ハンドクリーム（無香料）／マスク／小さめのメモ帳／飲み物（売場に置かない）</td></tr>
+</table></div>
+<h3>身だしなみ</h3>
+<ul>
+  <li>髪はまとめて帽子に入れる。前髪が目にかからない</li>
+  <li>爪は短く、マニキュア・ネイルはしない。指輪・時計・ブレスレットは外す</li>
+  <li>香水・香りの強い柔軟剤は使わない（食品の売場です）</li>
+  <li>熱・せき・下痢・手の傷があるときは、出勤前に派遣会社と本部へ連絡（無理に出ない）</li>
+</ul>
+</section>
+
+<!-- 3 -->
+<section class="ch" id="c3">
+<h2><span class="no">3</span>1日の流れ</h2>
+<p class="lead">時刻は会場によって変わります。会期LINEの案内と会場のルールが優先です。<span class="pill">アプリ</span> の印は報告アプリでやることです。</p>
+<ul class="tl">
+  <li><span class="t">開店の45〜30分前</span>従業員入口で入館（入店証・名札）。着替え・手洗い</li>
+  <li><span class="t">朝会（ある会場だけ）</span>会場の朝会・点検表への記入（例：毎日9:45までに押印、という会場もあります）</li>
+  <li><span class="t">開店準備</span>検品・陳列・値札・レジ立ち上げ・釣銭確認<span class="a">アプリ 開店前チェック・入荷検品</span></li>
+  <li><span class="t">開店</span>最初の一声を大きく。最初の1時間で売場の流れ（どこからお客様が来るか）をつかむ</li>
+  <li><span class="t">12時ごろ</span>レジの途中集計を見て報告<span class="a">アプリ 途中報告</span></li>
+  <li><span class="t">休憩</span>会場の決まりどおり、交代で。売場を空にしない（1人の時は会場の担当者に声をかけてから）</li>
+  <li><span class="t">15時ごろ</span>2回目の途中報告。足りなくなりそうな商品はこの時点で連絡<span class="a">アプリ 途中報告</span></li>
+  <li><span class="t">夕方の納品（ある会場だけ）</span>受け取り・検品。会場によって納品の時刻が決まっています（例：毎日16時）</li>
+  <li><span class="t">閉店</span>最後のお客様までていねいに。閉店後に売場を片付け、商品を保管場所へ</li>
+  <li><span class="t">レジ締め</span>精算レシートを出し、売上（税込）と客数を確認</li>
+  <li><span class="t">日報を送る（帰る前に必ず）</span>売上・客数・残り・ふりかえり<span class="a">アプリ 閉店日報</span></li>
+  <li><span class="t">退館</span>入店証を返す会場は返却。忘れ物・火の元・冷蔵ケースを確認</li>
+</ul>
+</section>
+
+<!-- 4 -->
+<section class="ch" id="c4">
+<h2><span class="no">4</span>開店準備と陳列</h2>
+<h3>陳列の基本</h3>
+<ul>
+  <li><b>前に出す</b>：商品は一番前・正面をそろえる。お客様の目の高さに人気商品（黒どら・あんバター）と旬どら</li>
+  <li><b>たくさんあるように見せる</b>：数が減ったら棚を寄せて詰める。すき間だらけの売場は売れません</li>
+  <li><b>期限の早いものを前に</b>（先入れ先出し）。前日分の残りから売る</li>
+  <li><b>生どらは冷蔵ケースから出しっぱなしにしない</b>。見本を出す時もケースの中で</li>
+  <li><b>値札・POP・アレルゲン表・期限表示</b>が全部見えるか、最後にお客様側から見て確認</li>
+</ul>
+<h3>会場のルールで気をつけること（よくある例）</h3>
+<ul>
+  <li>レジに登録されていない商品は売れません。新しい商品が届いたら、登録済みか本部に確認してから並べる</li>
+  <li>新商品は、実物とプライスカードを会場の事務所に見せてから販売、という会場があります（駅ナカに多い）</li>
+  <li>消費期限シールやラベラーの扱い、点検表の記入は会場ごとに違います。初日に会場の担当者の説明を聞く</li>
+  <li>試食は会場の許可がある時だけ（百貨店では原則禁止の会場もあります。例：東武池袋・松坂屋上野）</li>
+  <li>「日本一」「最高級」など、根拠のない言葉をPOPや声かけに使わない</li>
+</ul>
+<h3>開店前の売場写真</h3>
+<p>開店前に、売場を正面から1枚撮ってLINEへ。本部が陳列を一緒に確認し、売れ行きの見立てにも使います。</p>
+</section>
+
+<!-- 5 -->
+<section class="ch" id="c5">
+<h2><span class="no">5</span>声かけと接客</h2>
+<p class="lead">どら焼きは「通りがかりの人が足を止めた瞬間」に売れます。黙って立っていると、売上は半分になります。</p>
+<h3>基本の声かけ（通路に向かって、明るく大きく）</h3>
+<div class="say"><span class="w">呼び込み</span><q>いらっしゃいませ、門前仲町のどら焼き専門店・どら山です！</q></div>
+<div class="say"><span class="w">足を止めた方へ</span><q>工房で一枚ずつ銅板で手焼きしています。ふわふわの皮がどら山の自慢です</q></div>
+<div class="say"><span class="w">迷っている方へ</span><q>はじめてでしたら、一番人気の黒どらがおすすめです。白あんがお好きでしたら白どらも人気です</q></div>
+<div class="say"><span class="w">あんバターをすすめる一言（よく効きます）</span><q>あんバターが一番人気なんですが、おひとついかがですか？</q></div>
+<div class="say"><span class="w">今月の旬どら</span><q>今月だけの旬どらです。この季節しか食べられない味です</q></div>
+<div class="say"><span class="w">手土産の方へ</span><q>手土産でしたら、いろいろな味の詰め合わせもお作りできます。日持ちは焼きどらで製造日から5日です</q></div>
+<div class="say"><span class="w">お会計の後</span><q>ありがとうございます。会期は〇日まで出ています、またお待ちしています！</q></div>
+<div class="box info"><b>実際にあった数字</b>あんバターは「一番人気ですが、いかがですか？」と一言添えると、すすめた方の半分以上が買ってくださいました。都心ではバターが苦手な方も多いので、POPと一言の両方で伝えるのがコツです。</div>
+<h3>接客の基本</h3>
+<ul>
+  <li>目を見て、笑顔で。お客様が商品を見ている間は少し離れて待ち、目が合ったら一言</li>
+  <li>行列ができたら「お待たせしております」。2人いる時は、1人が注文を聞き、1人が袋詰め</li>
+  <li>商品は両手で、袋の口を上にしてお渡し。生どらには「要冷蔵です。今日中にお召し上がりください」</li>
+  <li>外国の方には、指さし・数字・「This one?」「Best seller」「Today only」で十分伝わります</li>
+  <li>わからない質問には「確認します、少々お待ちください」→ LINEで本部へ。推測で答えない（特にアレルギー）</li>
+</ul>
+<h3>売れ行きを上げるコツ</h3>
+<ul>
+  <li>売れている時間帯（多くはお昼すぎと夕方の帰宅時間）の前に、商品を補充して売場を満杯に</li>
+  <li>人が少ない時こそ、声を出し続ける。1人が止まると、次の人も止まります</li>
+  <li>売り切れそうな商品は早めにLINE。「売り切れでお断り」が一番もったいない</li>
+</ul>
+</section>
+
+<!-- 6 -->
+<section class="ch" id="c6">
+<h2><span class="no">6</span>商品の知識</h2>
+<p class="lead">価格は百貨店・駅ナカ共通の税込（お持ち帰り＝軽減税率8%）です。会場の値札と違う時は、値札とレジが正です。迷ったら商品の裏面ラベルを見るか、本部に確認してください。</p>
+<div class="tbl"><table>
+<tr><th>商品</th><th class="c">税込</th><th>おいしさ・説明のポイント</th><th>保存・期限の目安</th></tr>
+<tr><td><b>黒どら</b></td><td class="r">299円</td><td>どら山の定番。十勝小豆のあんこ。一番人気</td><td>常温／製造日から5日（販売は4日まで）</td></tr>
+<tr><td><b>白どら</b></td><td class="r">299円</td><td>白いんげん豆の白あん。やさしい甘さ</td><td>常温／製造日から5日（販売は4日まで）</td></tr>
+<tr><td><b>あんバターどら</b></td><td class="r">399円</td><td>あんこと十勝産生乳バター。甘じょっぱい人気商品</td><td>常温／製造日から5日（販売は4日まで）</td></tr>
+<tr><td><b>皮だけ</b></td><td class="r">430円</td><td>ふわふわの皮だけのパック。「皮が好き」という方に。子どもにも人気</td><td>常温</td></tr>
+<tr><td><b>旬どら</b>（月替わり）</td><td class="r">450円前後</td><td>その月だけの味。11月は「無花果乃紅茶どら」（値札で確認）</td><td>味により要冷蔵あり。ラベルで確認</td></tr>
+<tr><td><b>生どら</b></td><td class="r">480円</td><td>生クリームと果物をはさんだどら焼き</td><td><b>要冷蔵</b>／製造日から2日（販売は翌日まで）</td></tr>
+</table></div>
+<h3>アレルゲン（原材料のうち、表示が必要なもの）</h3>
+<div class="tbl"><table>
+<tr><th>商品</th><th>含まれるもの</th></tr>
+<tr><td>黒どら・白どら・皮だけ</td><td>小麦・卵</td></tr>
+<tr><td>あんバターどら</td><td>小麦・卵・乳成分</td></tr>
+<tr><td>生どら</td><td>小麦・卵・乳成分・大豆＋果物（バナナ・オレンジなど味による）</td></tr>
+<tr><td>旬どら</td><td>小麦・卵・乳成分＋その月の材料（例：11月の無花果乃紅茶どらはアーモンド）</td></tr>
+</table></div>
+<div class="box bad"><b>アレルギーの質問には、必ずラベルかアレルゲン表を一緒に見て答える</b>記憶で答えない。「同じ工房で作っているので、少しでも心配な方にはおすすめできません」と正直に。わからない時は販売しないでLINEで確認。</div>
+<h3>よく聞かれること</h3>
+<div class="tbl"><table>
+<tr><th>質問</th><th>答え方</th></tr>
+<tr><td>日持ちは？</td><td>「焼きどらは製造日から5日、生どらは要冷蔵で翌日までです。日付は裏のラベルに書いてあります」</td></tr>
+<tr><td>どれが一番人気？</td><td>「黒どらです。バターがお好きならあんバターも人気です」</td></tr>
+<tr><td>お店はどこ？</td><td>「東京の門前仲町に本店があります」</td></tr>
+<tr><td>手土産用の袋は？</td><td>会場の袋のルールに従う（有料・無料は会場ごと）。数が足りなくなりそうなら早めにLINE</td></tr>
+<tr><td>温めた方がいい？冷凍できる？</td><td>本部に確認した答えだけを伝える。わからなければ「確認します」</td></tr>
+</table></div>
+</section>
+
+<!-- 7 -->
+<section class="ch" id="c7">
+<h2><span class="no">7</span>レジとお金</h2>
+<ul>
+  <li><b>会場のレジを使います</b>（百貨店・駅ナカ）。会場のレジ研修・説明を受けてから打つ。わからない操作は会場の担当者に聞く</li>
+  <li><b>開店前に釣銭を数える</b>。会場から借りる釣銭（例：5万円）は、受け取り・返却の時に必ず数えて記録</li>
+  <li><b>税率はお持ち帰りの8%</b>。レジの設定と違うと思ったら、すぐ会場と本部へ</li>
+  <li><b>値引き・おまけは、本部の指示がある時だけ</b>。自分の判断でしない</li>
+  <li>商品券・クーポン・電子マネーは会場のルールどおり。扱えるかわからない時は会場の担当者に確認</li>
+  <li>現金を売場に置きっぱなしにしない。レジから離れる時は必ず閉める</li>
+</ul>
+<h3>閉店後のレジ締め</h3>
+<ol>
+  <li>会場の手順でレジを締め、精算レシート（日計）を出す</li>
+  <li>レシートの<b>総売上（税込）</b>と<b>客数</b>を確認する</li>
+  <li>報告アプリの「閉店日報」に入れる（第9章）。精算レシートの写真もLINEへ</li>
+  <li>現金の過不足があれば、金額と思い当たることを日報の「困ったこと」に書く（隠さない）</li>
+</ol>
+</section>
+
+<!-- 8 -->
+<section class="ch" id="c8">
+<h2><span class="no">8</span>納品・在庫・ロス</h2>
+<h3>納品が届いたら（検品）</h3>
+<ol>
+  <li>箱の上と横に書いてある「日付・種類・数」を見る</li>
+  <li>箱を開けて商品ごとに数える。箱は「1つの仕切りに同じ数」で詰めてあります（今は7個。変わることがあります）</li>
+  <li>納品書・LINEの「本日の作成個数」と合っているか比べる</li>
+  <li>生どら・冷蔵の旬どらは、数えたらすぐ冷蔵ケースへ</li>
+  <li>報告アプリの「入荷・検品」に入れて送る。数が違う・つぶれている時は、<b>箱と商品の写真</b>をLINEへ</li>
+</ol>
+<h3>在庫の考え方</h3>
+<div class="box info"><b>売れた数 ＝ 昨日の残り ＋ 今日届いた数 − ロス − 夜の残り</b>アプリはこの計算を自動でやります。夜の残りを正確に数えることが、明日の製造数を決める一番の材料です。</div>
+<ul>
+  <li><b>ロス</b>は、実際に捨てた数・こわれて売れなくなった数だけ。売れ残り（夜の残り）はロスではありません</li>
+  <li>販売期限が近い商品は前に出して先に売る。期限を過ぎた商品は売場から下げて本部に連絡（自分で捨てない）</li>
+  <li>保管場所（会場のバックヤード・冷蔵庫）は会場の指定どおり。名前と日付を書いたまとめ方で</li>
+</ul>
+<h3>足りなくなりそうな時</h3>
+<p>15時の途中報告の時点で「夕方までもたない」と思ったら、その時にLINE。明日ほしい数は閉店日報の「明日の納品のお願い」へ。最終的な数は本部が決めます。</p>
+</section>
+
+<!-- 9 -->
+<section class="ch" id="c9">
+<h2><span class="no">9</span>報告（アプリとLINE）</h2>
+<p>報告は<b>報告アプリ</b>で入れ、送った内容は<b>LINEにも</b>そのまま送れます。アプリに入れた閉店日報は、本部の売上の記録（毎朝の速報・会計）に自動で入ります。</p>
+<div class="tbl"><table>
+<tr><th>いつ</th><th>アプリの画面</th><th>何を</th></tr>
+<tr><td>開店前</td><td>開店前チェック</td><td>入館・身だしなみ・陳列・レジ確認ができたか＋売場写真（LINE）</td></tr>
+<tr><td>納品が届いたら</td><td>入荷・検品</td><td>商品ごとの届いた数・昨日の残り</td></tr>
+<tr><td>12時・15時ごろ</td><td>途中報告</td><td>その時点の売上・客数・売場の残り・人の流れ</td></tr>
+<tr><td>閉店後（帰る前に必ず）</td><td>閉店日報</td><td>売上（税込）・客数・商品ごとの残りと売れた数・ふりかえり・明日ほしい数</td></tr>
+<tr><td>すぐ伝えたい時</td><td>困った</td><td>欠品・数違い・会場からの指示など。至急は【至急】を付けて</td></tr>
+</table></div>
+<h3>閉店日報で守ってほしいこと</h3>
+<ul>
+  <li><b>毎日、帰る前に必ず送る</b>。送られていない日は、会社の売上が「0円」のままになります</li>
+  <li><b>会場は一覧から選ぶ</b>。「松坂屋上野」「上野松坂屋」のように書き方が変わると、同じ会場が2つあることになり、売上が二重に数えられる事故が起きました</li>
+  <li><b>数字の欄には数字だけ</b>。「233（全売場合計）」「約150」のような書き足しはしない。補足はふりかえり欄へ</li>
+  <li><b>桁の打ち間違いに注意</b>（例：212,951 を 212.951）。アプリは客単価がおかしい時に知らせます</li>
+  <li><b>練習・テストで送らない</b>。本物の数字が上書きされたことがあります</li>
+  <li>間違えたら、直してもう一度送ればOK（最後に送ったものが正しい数字になります）</li>
+  <li>電波が悪くて送れない時は、アプリの「送信待ち」に残ります。電波の良い所で押し直すか、LINEで送る</li>
+</ul>
+<h3>ふりかえりの書き方（本部が一番楽しみにしている所）</h3>
+<p>短くていいので、見たこと・聞いたことをそのまま。翌日の製造や、次の催事の作戦になります。</p>
+<pre class="line">人の流れ：多い（雨だったが夕方から増えた）
+よく売れた：15〜17時に旬どら。ご年配の方が手土産に詰め合わせ
+お客様の声：「去年もここで買った」「皮だけって何？」と3人に聞かれた
+困ったこと：17時に旬どらが売り切れ、10人ほどお断り
+明日やること：あんバターの一言を全員に。POPを通路側へ</pre>
+<h3>LINEで連絡する時の基本</h3>
+<ul>
+  <li><b>最初の1行で用件</b>（例：「黒どらが残り5個です」）。あいさつは短く</li>
+  <li><b>数字と写真</b>を付ける。文より写真1枚の方が早く伝わります</li>
+  <li>返事が必要な時は「〜してよいですか？」と質問の形で。至急は先頭に【至急】</li>
+  <li>会場の担当者に言われたことは、その日のうちにLINEで共有</li>
+  <li>お客様の個人情報（名前・電話番号）や、他の販売員の悪口は書かない</li>
+</ul>
+<h3>LINE文の例（アプリが自動で作ります）</h3>
+<pre class="line">【どら山 途中報告 15:02】11/5(水) 松坂屋上野
+山田 花子（〇〇派遣）
+売上 86,400円 ／ 客数 162人（目標の58%）
+残り：黒どら 40、白どら 22、あんバターどら 18、旬どら（無花果乃紅茶どら） 6、皮だけ 9、生どら 4
+人の流れ：多い
+旬どらが夕方までもたなそうです。明日は多めにいただけますか？</pre>
+</section>
+
+<!-- 10 -->
+<section class="ch" id="c10">
+<h2><span class="no">10</span>困ったとき早見表</h2>
+<div class="box bad"><b>命と安全が最優先</b>お客様のケガ・体調不良・異物の訴え・火事・地震・盗難は、アプリより先に<b>会場の担当者へ</b>。そのあと本部へ電話（番号は本部から渡される連絡カード、または会期LINEのノートにあります）。</div>
+<div class="tbl"><table>
+<tr><th>こんな時</th><th>まずやること</th><th>連絡</th></tr>
+<tr><td>売り切れそう</td><td>残りを数える。売場を寄せてきれいに見せる</td><td>LINE（何がいくつ残っているか）</td></tr>
+<tr><td>納品の数が違う・つぶれている</td><td>売場に出さずに分けて置く。写真を撮る</td><td>LINE（写真付き）</td></tr>
+<tr><td>レジが動かない・打ち間違えた</td><td>会場の担当者を呼ぶ。お客様には「少々お待ちください」</td><td>直ったらLINEで一言</td></tr>
+<tr><td>釣銭が足りなくなりそう</td><td>会場の両替の方法を担当者に聞く</td><td>LINE</td></tr>
+<tr><td>お客様からのご意見・おしかり</td><td>①まずおわびする ②何があったか・いつ買ったか・連絡先を聞く ③返金や交換はその場で約束しない ④商品・レシートを預かる（写真も）</td><td>LINEですぐ本部へ（返金・交換は本部が判断）</td></tr>
+<tr><td>「食べて具合が悪くなった」「異物が入っていた」</td><td>おわびし、お体の状態を最優先で聞く。現物を預かる。同じ日の商品は売場から下げる</td><td><b>本部へ電話</b>（LINEより先）</td></tr>
+<tr><td>遅刻・体調不良で休みたい</td><td>わかった時点ですぐ</td><td>派遣会社・紹介所 ＋ 本部（会期LINE）の両方へ</td></tr>
+<tr><td>会場から指示・注意を受けた</td><td>内容をメモし、その場で対応できることはする</td><td>その日のうちにLINE</td></tr>
+<tr><td>地震・火事</td><td>会場の放送と係員の誘導に従う。お客様の避難を手伝う。お金と商品は置いて逃げてよい</td><td>落ち着いてから本部へ</td></tr>
+<tr><td>わからない質問をされた</td><td>「確認します」と言ってLINEで本部へ</td><td>LINE</td></tr>
+</table></div>
+</section>
+
+<!-- 11 -->
+<section class="ch" id="c11">
+<h2><span class="no">11</span>衛生と、してはいけないこと</h2>
+<h3>衛生</h3>
+<ul>
+  <li>売場に入る前・トイレの後・休憩の後・お金をさわった後で商品にさわる前は、手洗いとアルコール</li>
+  <li>商品はトングか手袋で。素手で直接さわらない</li>
+  <li>生どらと冷蔵の商品は冷蔵ケースへ。ケースの温度がおかしい時はすぐ会場と本部へ</li>
+  <li>売場・ケースのガラス・レジまわりは、開店前と閉店後にふく</li>
+</ul>
+<h3>してはいけないこと</h3>
+<ul class="ng">
+  <li>売場での飲食・スマホの私用（報告・写真は本部のための仕事なのでOK）</li>
+  <li>自分の判断での値引き・おまけ・取り置き・予約の約束</li>
+  <li>アレルギーや期限について、確認せずに答えること</li>
+  <li>期限切れ・こわれた商品を売ること、自分で持ち帰ること</li>
+  <li>会場の通路に商品・箱をはみ出して置くこと</li>
+  <li>ほかのお店や商品を悪く言うこと</li>
+  <li>お客様・会場・ほかのスタッフのことをSNSに書くこと（売場の写真もSNSには出さない）</li>
+  <li>練習・テストで報告アプリやフォームを送ること</li>
+</ul>
+</section>
+
+<!-- 12 -->
+<section class="ch" id="c12">
+<h2><span class="no">12</span>最終日と撤収</h2>
+<ul>
+  <li>最終日は「売り切り」が目標。夕方の残りを見て、どの商品を中心に声をかけるか決める（値引きは本部の指示がある時だけ）</li>
+  <li>撤収の時刻と方法は会場ごとに決まっています（閉店後すぐ、など）。会期LINEの案内を確認</li>
+  <li>残った商品の数を数えて日報に。持ち帰り・配送の方法は本部の指示どおり</li>
+  <li>会場からの借り物（釣銭・什器・ラベラー・鍵）を返し、入店証・名札を返却</li>
+  <li>売場を元の状態に。ゴミは会場のルールどおりに分別</li>
+  <li>最後に会場の担当者へ「ありがとうございました」と一言。次の出店につながります</li>
+</ul>
+<div class="box ok"><b>おつかれさまでした</b>会期中の日報とふりかえりは、次の催事の作戦にそのまま使います。気づいたことがあれば、最終日の日報にたっぷり書いてください。</div>
+</section>
+
+<!-- 13 -->
+<section class="ch" id="c13">
+<h2><span class="no">13</span>派遣会社・紹介所の方へ</h2>
+<p>いつもありがとうございます。どこの会社の方でも同じように働けるよう、以下をお願いしています。</p>
+<h3>会期が始まる前に</h3>
+<div class="tbl"><table>
+<tr><th>いつまで</th><th>お願いすること</th></tr>
+<tr><td>初日の10日前まで（目安）</td><td>担当する販売員の名前を本部へ。会場の入店登録に<b>氏名・フリガナ・性別・生年月日・雇用形態・顔写真</b>が必要になることがあります。会場によって締め切りが初日の5日前などと早いため、決まり次第すぐにお願いします</td></tr>
+<tr><td>初日まで</td><td>会場の研修（動画・eラーニング・説明会・レジ研修）を販売員の方に受けていただく</td></tr>
+<tr><td>初日まで</td><td>このマニュアルと報告アプリのリンクを販売員の方に渡し、読んでおいていただく</td></tr>
+<tr><td>初日まで</td><td>会期のLINEグループに販売員の方を招待できるよう、本部とつなぐ</td></tr>
+</table></div>
+<h3>会期中</h3>
+<ul>
+  <li>シフト（誰が・何時から何時まで）は前日までに本部へ</li>
+  <li>遅刻・欠勤・交代は、わかった時点ですぐ本部へ（販売員の方からも会期LINEへ）</li>
+  <li>会場や本部からの連絡（搬入の許可証・ハウスルールなど）は、当日の販売員の方に必ず届くようお願いします</li>
+</ul>
+<h3>販売員の方にお願いしている「最低限の3つ」</h3>
+<ol>
+  <li>開店前に売場写真をLINEへ</li>
+  <li>12時・15時ごろに途中報告</li>
+  <li>帰る前に必ず閉店日報（アプリ）</li>
+</ol>
+<p class="lead">報告アプリのリンクは、本部が会場名を入れた形でお送りします（開くと会場が自動で設定されます）。</p>
+</section>
+
+<!-- 14 -->
+<section class="ch" id="c14">
+<h2><span class="no">14</span>チェックリスト（印刷用）</h2>
+<h3>初日の前</h3>
+<ul class="ck">
+  <li>会場の入店手続き（登録・顔写真・研修）が終わっている</li>
+  <li>会期のLINEグループに入った</li>
+  <li>報告アプリをホーム画面に入れ、名前・所属・会場を設定した</li>
+  <li>集合場所・時刻・名札の受け取り場所を確認した</li>
+  <li>持ち物と服装を用意した</li>
+</ul>
+<h3>毎日</h3>
+<ul class="ck">
+  <li>入館・名札・身だしなみ・手洗い</li>
+  <li>検品（数・つぶれ・期限）→ アプリで送信</li>
+  <li>陳列・値札・アレルゲン表・期限表示 → 売場写真をLINEへ</li>
+  <li>レジ立ち上げ・釣銭の確認</li>
+  <li>開店の第一声</li>
+  <li>12時の途中報告</li>
+  <li>15時の途中報告（足りない商品の連絡）</li>
+  <li>閉店・片付け・冷蔵品の保管</li>
+  <li>レジ締め（精算レシートの写真）</li>
+  <li>閉店日報を送った（ふりかえり・明日ほしい数）</li>
+  <li>入店証・鍵の返却、忘れ物の確認</li>
+</ul>
+</section>
+
+<p class="foot">株式会社ディテールアンドワークス どら山<br>このマニュアルは実際の催事での出来事をもとに、随時更新します。<br><a href="./report.html" style="color:var(--cream)">報告アプリ</a>　／　<a href="#" onclick="print();return false" style="color:var(--cream)">印刷する</a></p>
+</div>
+</body>
+</html>
