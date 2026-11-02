@@ -324,6 +324,9 @@ function doGet(e) {
   }
   if (action === 'ping') return _json({ ok: true, t: String(new Date()) });
 
+  // 催事報告アプリ（本部の一覧。合言葉が要る）→ Saiji.gs
+  if (action === 'saiji_list') return _json(_saijiList(e));
+
   // 質問箱: 直近のやり取り（画面表示用。合言葉なしで読める）
   if (action === 'qa') {
     var rows = _qaRows();
@@ -366,6 +369,8 @@ function doPost(e) {
   lock.tryLock(20000);
   try {
     var p = JSON.parse((e && e.postData && e.postData.contents) || '{}');
+    // 催事報告アプリ（販売員の送信。派遣会社の人も使うので合言葉なし）→ Saiji.gs
+    if (p.action === 'saiji_submit') return _json(_saijiSubmit(p));
     if (String(p.code || '').trim() !== _code() || !_code()) {
       return _json({ ok: false, error: 'BAD_CODE' });
     }
@@ -442,4 +447,235 @@ function doPost(e) {
   } finally {
     lock.releaseLock();
   }
+}
+
+
+/* ===================== 催事報告アプリ（saiji/report.html） ===================== */
+/**
+ * 催事報告アプリ（saiji/report.html）の受け口。上の doGet / doPost から呼ばれる。
+ *
+ * 流れ:
+ *   販売員のスマホ → POST {action:'saiji_submit', kind, data, rid}
+ *     1) 隠しタブ _saiji_reports に1行残す（全項目をJSONでも保存）
+ *     2) kind === 'daily'（閉店後の日報）の時だけ、今までのGoogleフォーム
+ *        「どら山 売上日報提出」へ同じ内容を回答として送る。
+ *        → フォーム回答シート → 夜のAirメイト自動入力・速報・予測は今まで通り動く
+ *   本部 → GET ?action=saiji_list&date=YYYY-MM-DD&code=合言葉 で会場ごとの状況を見る
+ *
+ * 合言葉: _app_config の saiji_hq_code（無ければ manual_edit_code と同じ）
+ * 販売員側は合言葉なしで送れる（派遣会社の人にも配れるように）。
+ * 送信ごとの番号 rid で二重送信を見分ける（電波が悪い会場で再送されても1回分）。
+ */
+var SAIJI_FORM_SHEET_ID = '1v0w_oAmbTmw3t9oOhCFVWv87ysm2gpOnNQbGAlALpIc';
+var T_SAIJI = '_saiji_reports';
+var SAIJI_HEADERS = ['受信日時', 'rid', '種類', '日付', '会場', '販売員', '所属',
+                     '売上税込', '売上税抜', '客数', 'フォーム送信', '中身(JSON)'];
+var SAIJI_KINDS = ['open', 'delivery', 'progress', 'daily', 'trouble'];
+var SAIJI_KIND_JA = { open: '開店準備', delivery: '入荷検品', progress: '途中報告',
+                      daily: '閉店日報', trouble: '困りごと' };
+// フォームの商品列（設問タイトルに含まれる言葉 → アプリの商品キー）
+var SAIJI_PRODUCTS = [
+  ['黒どら', 'kuro'], ['白どら', 'shiro'], ['あんバター', 'anbutter'],
+  ['旬どら', 'shun'], ['皮だけ', 'kawa'], ['生どら', 'nama']
+];
+
+function _saijiCode() {
+  var rows = _values(T_CONFIG);
+  for (var i = 0; i < rows.length; i++) {
+    if (String(rows[i][0]).trim() === 'saiji_hq_code') {
+      var v = String(rows[i][1]).trim();
+      if (v) return v;
+    }
+  }
+  return _code();
+}
+
+function _shSaiji() {
+  var sh = _ss().getSheetByName(T_SAIJI);
+  if (!sh) {
+    sh = _ss().insertSheet(T_SAIJI);
+    sh.getRange('A:L').setNumberFormat('@');
+    sh.appendRow(SAIJI_HEADERS);
+    sh.setFrozenRows(1);
+  }
+  return sh;
+}
+
+function _num(v) {
+  var s = String(v === null || v === undefined ? '' : v)
+    .replace(/[０-９]/g, function (c) { return String.fromCharCode(c.charCodeAt(0) - 0xFEE0); })
+    .replace(/[,，¥￥円\s]/g, '');
+  var m = s.match(/^-?\d+/);
+  return m ? Number(m[0]) : 0;
+}
+
+function _clip(v, n) { return String(v === null || v === undefined ? '' : v).slice(0, n); }
+
+/** 'YYYY-MM-DD' / 'YYYY/M/D' → {y,m,d}。だめなら null */
+function _ymd(s) {
+  var m = String(s || '').match(/^(\d{4})[\/\-.](\d{1,2})[\/\-.](\d{1,2})$/);
+  if (!m) return null;
+  return { y: Number(m[1]), m: Number(m[2]), d: Number(m[3]) };
+}
+
+function _ridSeen(sh, rid) {
+  if (!rid) return false;
+  var cache = CacheService.getScriptCache();
+  if (cache.get('srid_' + rid)) return true;
+  var last = sh.getLastRow();
+  if (last < 2) return false;
+  var from = Math.max(2, last - 300);   // 直近300件だけ見る（十分）
+  var ids = sh.getRange(from, 2, last - from + 1, 1).getValues();
+  for (var i = 0; i < ids.length; i++) if (String(ids[i][0]) === rid) return true;
+  return false;
+}
+
+/** 販売員の送信を受ける */
+function _saijiSubmit(p) {
+  var kind = String(p.kind || '');
+  if (SAIJI_KINDS.indexOf(kind) < 0) return { ok: false, error: 'BAD_KIND' };
+  var d = p.data || {};
+  var rid = _clip(p.rid, 60);
+  var ymd = _ymd(d.date);
+  if (!ymd) return { ok: false, error: 'BAD_DATE' };
+  var venue = _clip(d.venue, 60).trim();
+  if (!venue) return { ok: false, error: 'NO_VENUE' };
+
+  var sh = _shSaiji();
+  if (_ridSeen(sh, rid)) return { ok: true, dup: true };
+
+  var formNote = '';
+  if (kind === 'daily') {
+    if (_num(d.salesIncl) <= 0) return { ok: false, error: 'NO_SALES' };
+    try {
+      formNote = _saijiToForm(d);
+    } catch (err) {
+      formNote = '失敗: ' + String(err).slice(0, 200);
+    }
+  }
+  var row = [_fmt(new Date()), rid, SAIJI_KIND_JA[kind] || kind,
+             Utilities.formatString('%04d/%02d/%02d', ymd.y, ymd.m, ymd.d),
+             venue, _clip(d.staff, 40), _clip(d.agency, 40),
+             d.salesIncl === undefined ? '' : String(_num(d.salesIncl)),
+             d.salesExcl === undefined ? '' : String(_num(d.salesExcl)),
+             d.customers === undefined ? '' : String(_num(d.customers)),
+             formNote, _clip(JSON.stringify(d), 45000)];
+  sh.appendRow(row);
+  var rng = sh.getRange(sh.getLastRow(), 1, 1, row.length);
+  rng.setNumberFormat('@');
+  rng.setValues([row]);
+  if (rid) CacheService.getScriptCache().put('srid_' + rid, '1', 21600);
+  return { ok: true, form: formNote };
+}
+
+/** 設問タイトル → 入れる値（入れない設問は null） */
+function _saijiValueFor(title, d) {
+  var t = String(title || '').replace(/[\s　]/g, '');
+  var p = d.products || {};
+  for (var i = 0; i < SAIJI_PRODUCTS.length; i++) {
+    if (t.indexOf(SAIJI_PRODUCTS[i][0]) >= 0) {
+      var x = p[SAIJI_PRODUCTS[i][1]] || {};
+      if (t.indexOf('在庫') >= 0 || t.indexOf('残') >= 0) return String(_num(x.left));
+      if (t.indexOf('販売') >= 0) return String(_num(x.sold));
+      return null;
+    }
+  }
+  var ymd = _ymd(d.date);
+  if (t.indexOf('手入力') >= 0) return ymd.y + '/' + ymd.m + '/' + ymd.d;
+  if (t.indexOf('日付') >= 0) return { date: ymd };
+  if (t.indexOf('店舗') >= 0 || t.indexOf('会場') >= 0) return String(d.venue || '');
+  if (t.indexOf('税込') >= 0) return String(_num(d.salesIncl));
+  if (t.indexOf('税抜') >= 0) return String(_num(d.salesExcl));
+  if (t.indexOf('客数') >= 0) return String(_num(d.customers));
+  if (t.indexOf('所感') >= 0 || t.indexOf('来店') >= 0) return String(d.formComment || d.comment || '');
+  return null;
+}
+
+/** 選択肢の設問で、表記の近い選択肢を選ぶ */
+function _pickChoice(choices, v) {
+  var norm = function (s) { return String(s).replace(/[\s　]/g, '').replace(/松阪屋/g, '松坂屋'); };
+  var nv = norm(v);
+  for (var i = 0; i < choices.length; i++) if (norm(choices[i].getValue()) === nv) return choices[i].getValue();
+  for (var j = 0; j < choices.length; j++) {
+    var c = norm(choices[j].getValue());
+    if (c && (c.indexOf(nv) >= 0 || nv.indexOf(c) >= 0)) return choices[j].getValue();
+  }
+  return null;
+}
+
+/** 今までのGoogleフォームへ、日報を回答として送る。結果のひとことを返す */
+function _saijiToForm(d) {
+  var url = SpreadsheetApp.openById(SAIJI_FORM_SHEET_ID).getFormUrl();
+  if (!url) return '未送信: フォームが見つからない';
+  var form = FormApp.openByUrl(url);
+  var resp = form.createResponse();
+  var items = form.getItems();
+  var used = 0, skipped = [];
+  for (var i = 0; i < items.length; i++) {
+    var it = items[i];
+    var v = _saijiValueFor(it.getTitle(), d);
+    if (v === null || v === '') continue;
+    var type = it.getType();
+    try {
+      if (type === FormApp.ItemType.DATE) {
+        if (!v.date) continue;
+        resp.withItemResponse(it.asDateItem().createResponse(new Date(v.date.y, v.date.m - 1, v.date.d)));
+      } else if (v && v.date) {
+        continue;
+      } else if (type === FormApp.ItemType.TEXT) {
+        resp.withItemResponse(it.asTextItem().createResponse(v));
+      } else if (type === FormApp.ItemType.PARAGRAPH_TEXT) {
+        resp.withItemResponse(it.asParagraphTextItem().createResponse(v));
+      } else if (type === FormApp.ItemType.LIST) {
+        var li = it.asListItem();
+        var c1 = _pickChoice(li.getChoices(), v);
+        if (!c1) { skipped.push(it.getTitle()); continue; }
+        resp.withItemResponse(li.createResponse(c1));
+      } else if (type === FormApp.ItemType.MULTIPLE_CHOICE) {
+        var mc = it.asMultipleChoiceItem();
+        var c2 = _pickChoice(mc.getChoices(), v);
+        if (!c2 && !mc.hasOtherOption()) { skipped.push(it.getTitle()); continue; }
+        resp.withItemResponse(mc.createResponse(c2 || v));
+      } else {
+        continue;
+      }
+      used++;
+    } catch (err) {
+      skipped.push(it.getTitle());
+    }
+  }
+  resp.submit();
+  return 'OK ' + used + '問' + (skipped.length ? '（入らず: ' + skipped.join('、').slice(0, 120) + '）' : '');
+}
+
+/** 本部用: 指定日の報告一覧（合言葉が要る） */
+function _saijiList(e) {
+  var prm = (e && e.parameter) || {};
+  if (String(prm.code || '').trim() !== _saijiCode() || !_saijiCode()) {
+    return { ok: false, error: 'BAD_CODE' };
+  }
+  var ymd = _ymd(prm.date);
+  if (!ymd) return { ok: false, error: 'BAD_DATE' };
+  var day = Utilities.formatString('%04d/%02d/%02d', ymd.y, ymd.m, ymd.d);
+  var since = new Date(ymd.y, ymd.m - 1, ymd.d - 7);
+  var sinceStr = Utilities.formatString('%04d/%02d/%02d', since.getFullYear(), since.getMonth() + 1, since.getDate());
+  var sh = _shSaiji();
+  var last = sh.getLastRow();
+  if (last < 2) return { ok: true, date: day, items: [], recentVenues: [] };
+  var from = Math.max(2, last - 1500);
+  var vals = sh.getRange(from, 1, last - from + 1, SAIJI_HEADERS.length).getValues();
+  var items = [], recent = {};
+  for (var i = 0; i < vals.length; i++) {
+    var r = vals[i];
+    var rd = _s(r[3]).slice(0, 10);
+    if (rd >= sinceStr && rd < day && _s(r[2]) === '閉店日報') recent[_s(r[4])] = rd;
+    if (rd !== day) continue;
+    var body = {};
+    try { body = JSON.parse(_s(r[11]) || '{}'); } catch (err) { body = {}; }
+    items.push({ at: _s(r[0]), kind: _s(r[2]), venue: _s(r[4]), staff: _s(r[5]), agency: _s(r[6]),
+                 salesIncl: _s(r[7]), salesExcl: _s(r[8]), customers: _s(r[9]), form: _s(r[10]),
+                 data: body });
+  }
+  var rv = Object.keys(recent).map(function (k) { return { venue: k, last: recent[k] }; });
+  return { ok: true, date: day, items: items, recentVenues: rv };
 }
