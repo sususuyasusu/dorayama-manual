@@ -158,7 +158,7 @@ h2.sec .ic{width:16px;height:16px;vertical-align:-.2em}
 .hit .c .ic{width:13px;height:13px;vertical-align:-.2em;margin-right:3px}
 .spin{display:inline-block;width:18px;height:18px;border:2px solid rgba(255,255,255,.25);border-top-color:var(--cream);border-radius:50%;animation:spin .7s linear infinite;vertical-align:-4px;margin-right:8px}
 @keyframes spin{to{transform:rotate(360deg)}}
-@media(min-width:768px){:root{--appw:640px}}
+@media(min-width:768px){:root{--appw:720px}}
   /* 起動時だけ：ロゴ → MANUAL → 手前へ抜けて本編へ（在庫アプリと同じ演出） */
   .intro{position:fixed;inset:0;z-index:2000;background:var(--bg);display:grid;place-items:center;
     overflow:hidden;animation:introFailsafe 10s step-end forwards}
@@ -227,6 +227,112 @@ body.editing #edhint{display:block}
 .sheet .go.danger{background:var(--red);margin-top:10px}
 .sheet .delmsg{font-size:13px;color:#8b2a24;font-weight:700;margin-top:12px;line-height:1.5}
 .sheet button:disabled{opacity:.5}
+/* ===== 画面の幅に合わせた見え方（レスポンシブ） =====
+   〜767px   : スマホ（これまでと同じ）
+   768〜1023 : タブレット（内容を少し広く・現場は3列・入力は中央の窓）
+   1024px〜  : パソコン（左に現場の一覧とさがす欄、右に内容。上の帯と2段の切り替えは使わない）
+   1440px〜  : 広い画面（現場ページの内容を2列に並べる／ホームはお知らせと現場を左右に並べる）
+   --sbw ＝左メニューの幅（スマホ・タブレットは0） */
+:root{--sbw:0px}
+body{padding-left:var(--sbw)}
+#toast{left:calc(50% + var(--sbw)/2)}
+.side{display:none}
+button{cursor:pointer}
+:focus-visible{outline:2px solid #ffb096;outline-offset:2px}
+/* 左メニュー（パソコン幅で表示） */
+.side-brand{display:flex;align-items:center;gap:10px;color:var(--cream);font-weight:800;font-size:17px;letter-spacing:.02em;padding:2px 6px 14px}
+.side-brand img{height:30px;width:auto;display:block}
+.sside{position:relative;margin:0 2px 8px}
+.sside .ic{position:absolute;left:14px;top:50%;margin-top:-8px;width:16px;height:16px;color:var(--sub);pointer-events:none}
+.sside input{width:100%;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:10px 14px 10px 38px;font-size:14px;color:var(--ink);outline:none}
+.sside input::placeholder{color:var(--sub)}
+.side-h{font-size:11.5px;font-weight:800;color:var(--onbg);letter-spacing:.08em;margin:16px 8px 6px}
+.sn{display:flex;align-items:center;gap:11px;width:100%;text-align:left;border:0;background:transparent;color:var(--cream);border-radius:12px;padding:6px 10px;font-family:inherit}
+.sn .ic{flex:none;width:34px;height:34px;padding:8px;border-radius:10px;background:rgba(255,255,255,.10);color:var(--lt,var(--cream));vertical-align:0}
+.sn .tx{display:flex;flex-direction:column;min-width:0;line-height:1.25}
+.sn .t{font-weight:800;font-size:14.5px}
+.sn .s{font-size:11px;font-weight:700;color:var(--onbg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sn.on{background:var(--card);color:var(--ink)}
+.sn.on .ic{background:var(--lt,var(--gray-bg));color:var(--ac,var(--coral))}
+.sn.on .s{color:var(--sub)}
+.side-foot{margin-top:auto;padding:18px 8px 0;font-size:12.5px;line-height:2.1}
+.side-foot a{display:block;color:var(--cream);font-weight:700;text-decoration:none}
+.side-foot .ic{width:15px;height:15px;vertical-align:-.25em;margin-right:5px}
+.catbody,.hcols{display:block}
+/* タブレット */
+@media(min-width:768px){
+  .grid{grid-template-columns:repeat(3,1fr);gap:11px}
+  #modal{align-items:center;padding:20px}
+  .sheet{border-radius:18px;max-width:560px;max-height:86vh}
+}
+/* パソコン：左に一覧、右に内容 */
+@media(min-width:1024px){
+  :root{--appw:900px;--sbw:280px}
+  body{font-size:16px}
+  .topbar,.search,.foot{display:none}
+  .side{display:flex;flex-direction:column;position:fixed;left:0;top:0;bottom:0;width:var(--sbw);z-index:35;padding:20px 14px 16px;overflow-y:auto;
+    background:rgba(8,40,22,.6);border-right:1px solid rgba(255,255,255,.12);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+  .wrap{padding:28px 18px 0}
+  .cathead{margin-top:0;padding:18px 22px}
+  .cathead .e{width:52px;height:52px}
+  .cathead .n{font-size:24px}
+  .cathead .s{font-size:14px}
+  .bar{font-size:17px;margin:26px 2px 11px}
+  .item{padding:12px 15px;gap:12px;margin:8px 0}
+  .item .lb{font-size:14.5px}
+  .item .tx{font-size:15px}
+  .bul{font-size:15px;padding:11px 15px}
+  .note{font-size:14.5px;padding:12px 15px}
+  .ng{font-size:15px;padding:12px 15px}
+  .flow .st{font-size:14px;padding:7px 12px}
+  .quad .qh{font-size:14.5px}
+  .quad .qb{font-size:13.5px}
+  .ph img{max-height:460px;object-fit:contain;background:var(--gray-bg)}
+  .ph .cap{font-size:13.5px}
+  .upd{padding:13px 16px}
+  .upd .tt{font-size:15px}
+  .upd .no{font-size:13.5px}
+  .cat-card{min-height:108px;padding:14px 14px 13px 15px}
+  .cat-card .n{font-size:16px}
+  .cat-card .s{font-size:12px}
+  .fabs{right:max(18px,calc((100vw - var(--sbw) - var(--appw))/2 + 18px));bottom:24px}
+  #edhint{left:calc(var(--sbw) + max(18px,(100vw - var(--sbw) - var(--appw))/2 + 18px));bottom:30px}
+}
+/* 広い画面：2列 */
+@media(min-width:1440px){
+  :root{--appw:1160px}
+  .catbody{column-count:2;column-gap:30px}
+  .catbody>*{break-inside:avoid}
+  .catbody>.bar,.catbody>.ed-bar{break-after:avoid}
+  .catbody>.bar:first-child,.catbody>.ed-bar:first-child .bar{margin-top:6px}
+  .hcols{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:34px;align-items:start}
+  .hcols .grid{grid-template-columns:1fr 1fr}
+  #hits{display:grid;grid-template-columns:1fr 1fr;column-gap:14px;align-items:start}
+}
+@media(min-width:1760px){:root{--appw:1320px}}
+/* マウスで操作するとき（スマホでは出さない） */
+@media(hover:hover){
+  .cat-card:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.2)}
+  .upd[onclick]:hover,.hit:hover{background:#fff;cursor:pointer}
+  .moreu:hover{background:#ece6d9}
+  .hbtn:hover,.cn:hover{background:rgba(255,255,255,.2)}
+  .sn:hover{background:rgba(255,255,255,.09)}
+  .sn.on:hover{background:var(--card)}
+  .fab:hover{transform:translateY(-2px)}
+  .edrow:hover .edcover{background:rgba(216,85,44,.1)}
+  .side-foot a:hover{text-decoration:underline}
+}
+/* 画面の高さが低いパソコン（ノートPCなど）：左メニューを少し詰めて、下のリンクまで見えるようにする */
+@media(min-width:1024px) and (max-height:860px){
+  .side{padding:14px 12px 12px}
+  .side-brand{padding-bottom:8px}
+  .sside{margin-bottom:2px}
+  .side-h{margin:10px 8px 3px}
+  .sn{padding:3px 10px}
+  .sn .ic{width:30px;height:30px;padding:7px}
+  .sn .t{font-size:14px}
+  .side-foot{padding-top:10px;line-height:1.9}
+}
 </style>
 </head>
 <body>
@@ -244,6 +350,7 @@ body.editing #edhint{display:block}
   <nav class="catnav" id="catnav" aria-label="現場の切り替え"></nav>
 </div>
 
+<aside class="side" id="side"></aside>
 <div class="wrap" id="app"><div id="load"><span class="spin"></span>読み込み中…（起動直後は30秒ほどかかることがあります）</div></div>
 <div class="fabs" id="fabs" style="display:none">
   <button class="fab fab-edit" id="fabEdit"></button>
@@ -357,12 +464,13 @@ function daysAgo(dstr){
   const m=String(dstr).match(/(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})/);if(!m)return 999;
   return Math.floor((new Date(M.today)-new Date(+m[1],+m[2]-1,+m[3]))/86400000);
 }
-function go(v){view=v;editMode=false;window.scrollTo(0,0);render();}
+function go(v){view=v;editMode=false;const sq=$('#sq');if(sq)sq.value='';window.scrollTo(0,0);render();}
 function render(){
   $('#hbtn').style.display=view.name==='home'?'none':'';
   $('#htitle').textContent=view.name==='cat'?view.cat:'スタッフマニュアル';
   if(view.name==='home')renderHome();else renderCat(view.cat);
   renderNav();
+  renderSide();
 }
 /* トップ以外：現場の切り替えをヘッダーに小さく2段で固定（今いる現場は白く） */
 function renderNav(){
@@ -384,9 +492,49 @@ function renderNav(){
 $('#hbtn').innerHTML=ic('home')+'トップ';
 $('#hbtn').onclick=()=>go({name:'home'});
 
+/* ---------- パソコン幅の左メニュー（1024px以上のとき、CSSで表示する） ---------- */
+function initSide(){
+  $('#side').innerHTML=`<div class="side-brand"><img src="./img/header-logo.png" alt="どら山"><span>スタッフマニュアル</span></div>
+    <div class="sside">${ic('search')}<input id="sq" placeholder="さがす（/ キー）" autocomplete="off" oninput="sideSearch()"></div>
+    <nav id="sidenav" aria-label="現場の一覧"></nav>
+    <div class="side-foot">
+      <a href="javascript:openAnnounce()">${ic('megaphone')}お知らせだけを投稿する</a>
+      <a href="https://dorayama-seizo-app-1.onrender.com/">${ic('chart')}製造アプリへ</a>
+      <a href="https://docs.google.com/spreadsheets/d/1nLCyRaw8ug_U7HVnVwCC490jeRVTdJDKouixA3s6sy0/edit" target="_blank">${ic('printer')}印刷版（スプレッドシート）</a>
+    </div>`;
+}
+/* 今いる場所を白く示す。さがす欄は作り直さない（入力中の文字と入力位置を保つため） */
+function renderSide(){
+  const el=$('#sidenav');if(!el)return;
+  el.innerHTML=`<button class="sn${view.name==='home'?' on':''}" onclick="go({name:'home'})">${ic('home')}<span class="tx"><span class="t">ホーム</span><span class="s">お知らせ・さがす</span></span></button>
+    <div class="side-h">現場から選ぶ</div>`+M.categories.map(c=>`<button class="sn${view.name==='cat'&&view.cat===c.name?' on':''}" style="--ac:#${c.accent};--lt:#${c.light}" onclick="go({name:'cat',cat:'${esc(c.name)}'})">${ic(c.icon)}<span class="tx"><span class="t">${esc(c.name)}</span><span class="s">${esc(c.sub)}</span></span></button>`).join('');
+}
+/* 左のさがす欄：どのページからでも検索でき、結果はホームの画面に出す */
+function sideSearch(){
+  const sq=$('#sq'),t=sq.value.trim();
+  if(!t&&view.name!=='home')return;
+  if(view.name!=='home'){const raw=sq.value;go({name:'home'});sq.value=raw;}
+  search(t);
+}
+/* 「/」キーでさがす欄へ（入力中・入力画面を開いている時は除く） */
+document.addEventListener('keydown',e=>{
+  if(e.key!=='/'||e.ctrlKey||e.metaKey||e.altKey)return;
+  if(/^(INPUT|TEXTAREA|SELECT)$/.test((document.activeElement||{}).tagName||''))return;
+  if($('#modal').classList.contains('on')||!window.matchMedia('(min-width:1024px)').matches)return;
+  e.preventDefault();$('#sq').focus();
+});
+/* Escキー：入力画面・写真の拡大を閉じる */
+document.addEventListener('keydown',e=>{
+  if(e.key!=='Escape')return;
+  if($('#modal').classList.contains('on'))closeModal();
+  else if(getComputedStyle($('#lightbox')).display!=='none')$('#lightbox').style.display='none';
+});
+initSide();
+
 /* ---------- ホーム ---------- */
 function renderHome(){
   const upd=M.updates||[];
+  const first=window.matchMedia('(min-width:1024px)').matches?8:4;   // パソコン幅ではお知らせを多めに出す
   const updHtml=(n)=>upd.slice(0,n).map(u=>{
     const c=catByName(u.cat);
     return `<div class="upd" ${c?`onclick="go({name:'cat',cat:'${esc(u.cat)}'})"`:''}>
@@ -406,11 +554,14 @@ function renderHome(){
     <div class="search">${ic('search')}<input id="q" placeholder="さがす（例: あんこ / 両替 / シーラー）"></div>
     <div id="hits"></div>
     <div id="homebody">
+      <div class="hcols"><section class="hnews">
       <h2 class="sec">${ic('bell')}更新のお知らせ</h2>
-      <div class="updates" id="updbox">${updHtml(4)||'<div class="upd">お知らせはまだありません</div>'}
-        ${upd.length>4?'<button class="moreu" id="moreu">'+ic('down')+' 過去のお知らせもすべて見る（'+upd.length+'件）</button>':''}</div>
+      <div class="updates" id="updbox">${updHtml(first)||'<div class="upd">お知らせはまだありません</div>'}
+        ${upd.length>first?'<button class="moreu" id="moreu">'+ic('down')+' 過去のお知らせもすべて見る（'+upd.length+'件）</button>':''}</div>
+      </section><section class="hcats">
       <h2 class="sec">${ic('grid')}現場から選ぶ</h2>
       <div class="grid">${cats}</div>
+      </section></div>
       <div class="foot">
         ${ic('pencil')} 内容の追加・修正は、各ページ右下の「追加」「修正」ボタンから（編集者用）<br>
         <a id="annlink" href="javascript:openAnnounce()">${ic('megaphone')} お知らせだけを投稿する</a><br><br>
@@ -451,7 +602,7 @@ function renderCat(name){
   const rows=M.content[name]||[];
   let h=`<div class="catpage" style="--ac:#${c.accent};--lt:#${c.light}">
     <div class="cathead"><span class="e">${ic(c.icon)}</span>
-      <div><div class="n">${esc(name)}</div><div class="s">${esc(c.sub)}</div></div></div>`;
+      <div><div class="n">${esc(name)}</div><div class="s">${esc(c.sub)}</div></div></div><div class="catbody">`;
   for(const r of rows){
     const t=r.type,start=h.length;
     if(t==='見出し')h+=`<div class="bar">${esc(r.text)}</div>`;
@@ -470,10 +621,10 @@ function renderCat(name){
       const hs=r.label.split('|'),ds=r.text.split('|');
       h+=`<div class="quad">${hs.map((x,i)=>`<div class="q"><div class="qh">${esc(x)}</div><div class="qb">${esc(ds[i]||'')}</div></div>`).join('')}</div>`;}
     else if(t==='写真'&&r.photo)h+=`<div class="ph" onclick="lightbox('./img/${esc(r.photo)}','${esc(r.label)}')"><img loading="lazy" src="./img/${esc(r.photo)}"><div class="cap">${ic('camera')}${esc(r.label)}</div></div>`;
-    if(editMode&&h.length>start)h=h.slice(0,start)+`<div class="edrow">${h.slice(start)}<span class="edcover" onclick="openEdit(${r.n})"></span><i class="edtag">${ic('pencil')}</i></div>`;
+    if(editMode&&h.length>start)h=h.slice(0,start)+`<div class="edrow${t==='見出し'?' ed-bar':''}">${h.slice(start)}<span class="edcover" onclick="openEdit(${r.n})"></span><i class="edtag">${ic('pencil')}</i></div>`;
     if(r.src&&r.src.includes('アプリ追記')){h+=`<div style="font-size:11px;color:#9a8f7e;margin:-4px 4px 8px;text-align:right">（${esc(r.src)}）</div>`;}
   }
-  h+=`<div class="note memo" style="margin-top:18px">※ 旬どら（期間限定商品）の作り方・最新の変更は、必ずLINEグループのノートで確認してください。</div>
+  h+=`</div><div class="note memo" style="margin-top:18px">※ 旬どら（期間限定商品）の作り方・最新の変更は、必ずLINEグループのノートで確認してください。</div>
     <div style="height:150px"></div>
     </div>`;
   $('#app').innerHTML=h;
